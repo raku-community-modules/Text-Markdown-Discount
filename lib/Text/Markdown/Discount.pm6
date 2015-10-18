@@ -142,3 +142,76 @@ method       render()                        { self.to-str               }
 method       to-html()                       { self.to-str               }
 method       to_html()                       { self.to_str               }
 sub          parse-markdown($text) is export { $?PACKAGE.from-str($text) }
+
+
+=begin pod
+
+=head1 NAME
+
+Text::Markdown::Discount - markdown to HTML using the Discount C library
+
+=head1 VERSION
+
+0.1.1
+
+=head1 SYNOPSIS
+
+    use Text::Markdown::Discount;
+    my $raw-md = '# Hello `World`!'
+
+    # render HTML into string...
+    say markdown($raw-md       ); # from a string
+    say markdown('README.md'.IO); # from a file, note the `.IO`
+
+    # ...or directly into files
+    markdown($raw-md,        'sample.html');
+    markdown('README.md'.IO, 'README.html');
+
+The API from L<Text::Markdown> is also supported:
+
+    my $md = Text::Markdown::Discount.new($raw-md);
+    say $md.render;
+
+    $md = parse-markdown($raw-md);
+    say $md.to-html;
+    say $md.to_html; # same thing
+
+=head1 DESCRIPTION
+
+=head2 libmarkdown
+
+This library provides bindings to the L<Discount
+library|https://github.com/Orc/discount> via L<NativeCall>.  You need to
+have it installed as the C<libmarkdown> shared library.
+
+On Ubuntu 15.04, it's available via C<apt-get> as the
+C<libmarkdown2-dev> package, the same goes for several Debians.  If it's
+not available as a binary for your system, you can compile it L<from
+source|https://github.com/Orc/discount>.
+
+=head1 TODO
+
+=item Support for the various flags in Discount
+=item Make sure that my NativeCall usage is correct
+=item Finish this documentation
+
+=head1 AUTHOR
+
+Carsten Hartenfels <carsten.hartenfels@googlemail.com>
+
+=head1 SEE ALSO
+
+L<Text::Markdown>,
+L<Discount|http://www.pell.portland.or.us/~orc/Code/discount/>,
+L<Discount GitHub repository|https://github.com/Orc/discount>.
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2015 by Carsten Hartenfels.
+
+This program is distributed under the terms of the Artistic License 2.0.
+
+For further information, please see LICENSE or visit
+<http://www.perlfoundation.org/attachment/legal/artistic-2_0.txt>.
+
+=end pod
