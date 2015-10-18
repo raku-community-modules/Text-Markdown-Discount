@@ -123,19 +123,16 @@ method to-file(Text::Markdown::Discount:D: Str $file)
 }
 
 
-sub markdown(Str :$str?, Str :$file?, Str :$to-file?) is export
+multi sub markdown(Str:D $str, Cool $to-file?) is export
 {
-    fail "Can't source from both string '$str' and file '$file'"
-        if defined $str && defined $file;
+    my $self = $?PACKAGE.from-str($str);
+    return $to-file.defined ?? $self.to-file(~$to-file) !! $self.to-str;
+}
 
-    my Text::Markdown::Discount:D $self = do
-    {
-        with $str { $?PACKAGE.from-str( $str ) }
-        else      { $?PACKAGE.from-file($file) }
-    };
-
-    with $to-file { $self.to-file($to-file) }
-    else          { $self.to-str            }
+multi sub markdown(IO::Path:D $file, Cool $to-file?) is export
+{
+    my $self = $?PACKAGE.from-file(~$file);
+    return $to-file.defined ?? $self.to-file(~$to-file) !! $self.to-str;
 }
 
 
