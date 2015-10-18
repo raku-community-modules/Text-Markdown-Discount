@@ -29,34 +29,30 @@ my $simple = TestFile.new('simple');
 
 sub test-outputs(Text::Markdown::Discount:D $markdown)
 {
-    is $markdown.to-str, $simple.to.trim, 'conversion to string works';
+    is $markdown.to-str, $simple.to.trim, '...conversion to string works';
 
     my $file = tmpname;
     $markdown.to-file($file);
-    is slurp($file), $simple.to, 'writing to file works';
+    is slurp($file), $simple.to, '...writing to file works';
     unlink $file;
 }
 
 
-subtest
 {
     my $markdown = Text::Markdown::Discount.from-str($simple.from);
-    ok $markdown ~~ Text::Markdown::Discount:D, 'string is parsed';
+    ok $markdown ~~ Text::Markdown::Discount:D, 'string gets parsed';
     test-outputs($markdown);
-},
-'string source';
+}
 
 
-subtest
 {
     my $markdown = Text::Markdown::Discount.from-file($simple.md);
-    ok $markdown ~~ Text::Markdown::Discount:D, 'file is parsed';
+    ok $markdown ~~ Text::Markdown::Discount:D, 'file gets parsed';
     test-outputs($markdown);
+}
 
-    dies-ok { Text::Markdown::Discount.from-file("$t/nonexistent.md") },
-            'sourcing from nonexistent file fails';
-},
-'file source';
+dies-ok { Text::Markdown::Discount.from-file("$t/nonexistent.md") },
+        'sourcing from nonexistent file fails';
 
 
 done-testing
