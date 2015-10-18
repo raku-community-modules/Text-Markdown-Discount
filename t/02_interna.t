@@ -1,30 +1,8 @@
 use v6;
 use Test;
 use Text::Markdown::Discount;
-use NativeCall;
-
-
-sub tmpnam(Pointer[int8] --> Str) is native(Str) { * }
-sub tmpname() { tmpnam(Pointer[int8]) }
-my $t = "{$?FILE.IO.dirname}/data";
-
-
-class TestFile
-{
-    has $.md;
-    has $.html;
-    has $.from;
-    has $.to;
-
-    multi method new(Str $file)
-    {
-        my $md   = "$t/$file.md";
-        my $html = "$t/$file.html";
-        self.bless(:$md, :$html, :from(slurp $md), :to(slurp $html))
-    }
-};
-
-my $simple = TestFile.new('simple');
+use lib "{$?FILE.IO.dirname}/data";
+use TextMarkdownDiscountTestBoilerplate;
 
 
 sub test-outputs(Text::Markdown::Discount:D $markdown)
@@ -51,7 +29,7 @@ sub test-outputs(Text::Markdown::Discount:D $markdown)
     test-outputs($markdown);
 }
 
-dies-ok { Text::Markdown::Discount.from-file("$t/nonexistent.md") },
+dies-ok { Text::Markdown::Discount.from-file("$data/nonexistent.md") },
         'sourcing from nonexistent file fails';
 
 
