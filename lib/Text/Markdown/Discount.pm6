@@ -140,7 +140,8 @@ sub markdown(Str :$str?, Str :$file?, Str :$to-file?) is export
 
 
 # Compatibility with Text::Markdown
-multi method new($text) { self.from-str($text) }
-method       render()   { self.to-str          }
-method       to-html()  { self.to-str          }
-method       to_html()  { self.to_str          }
+multi method new($text)                      { self.from-str($text)      }
+method       render()                        { self.to-str               }
+method       to-html()                       { self.to-str               }
+method       to_html()                       { self.to_str               }
+sub          parse-markdown($text) is export { $?PACKAGE.from-str($text) }
