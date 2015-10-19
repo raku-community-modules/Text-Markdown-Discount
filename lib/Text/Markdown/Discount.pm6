@@ -10,15 +10,19 @@ class FILE is repr('CPointer')
     sub fclose(FILE --> int32)
         is native(Str) { * }
 
+    my $errno := cglobal(Str, 'errno', int32);
+    # Don't wanna use `strerror` because it's not thread-safe.
+
 
     method open(Str $file, Str $mode --> FILE)
     {
-        fopen($file, $mode) or fail "Can't fopen '$file' with mode '$mode'"
+        fopen($file, $mode)
+            or fail "Can't fopen '$file' with mode '$mode' (errno $errno)"
     }
 
     method close()
     {
-        fclose(self) == 0 or fail "Error fclosing '{self}'"
+        fclose(self) == 0 or warn "Error fclosing '{self}' (errno $errno)"
     }
 }
 
@@ -55,8 +59,9 @@ class MMIOT is repr('CPointer')
     multi method new(Str :$file! --> MMIOT:D)
     {
         my $fh   = FILE.open($file, 'r');
-        my $self = mkd_in($fh, 0);
+        my $self = try mkd_in($fh, 0);
         $fh.close;
+        fail $! without $self;
         return $self;
     }
 
