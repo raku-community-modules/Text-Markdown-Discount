@@ -103,7 +103,9 @@ class MMIOT is repr('CPointer')
 }
 
 
-has MMIOT $.mmiot;
+has MMIOT $!mmiot;
+
+submethod BUILD(:$!mmiot) { * }
 
 
 method from-str(Str $str --> Text::Markdown::Discount:D)
@@ -119,12 +121,12 @@ method from-file(Str $file --> Text::Markdown::Discount:D)
 
 method to-str(Text::Markdown::Discount:D: --> Str)
 {
-    return $.mmiot.html;
+    return $!mmiot.html;
 }
 
 method to-file(Text::Markdown::Discount:D: Str $file)
 {
-    $.mmiot.html($file);
+    $!mmiot.html($file);
 }
 
 
