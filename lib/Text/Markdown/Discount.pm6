@@ -50,15 +50,15 @@ class MMIOT is repr('CPointer')
         is native('libmarkdown') { * }
 
 
-    multi method new(Str :$str! --> MMIOT:D)
+    multi method new(Cool :$str! --> MMIOT:D)
     {
         my int32 $bytes = $str.encode('UTF-8').elems;
-        return mkd_string($str, $bytes, 0);
+        return mkd_string(~$str, $bytes, 0);
     }
 
-    multi method new(Str :$file! --> MMIOT:D)
+    multi method new(Cool :$file! --> MMIOT:D)
     {
-        my $fh   = FILE.open($file, 'r');
+        my $fh   = FILE.open(~$file, 'r');
         my $self = try mkd_in($fh, 0);
         $fh.close;
         fail $! without $self;
@@ -80,7 +80,7 @@ class MMIOT is repr('CPointer')
         return $buf[0];
     }
 
-    multi method html(MMIOT:D: Str $file)
+    multi method html(MMIOT:D: Str $file --> Bool)
     {
         # mkd_compile(self, 0) or fail "Can't compile markdown";
         # my $fh = FILE.open($file, 'w');
@@ -91,7 +91,7 @@ class MMIOT is repr('CPointer')
         # compiled to a string before, it throws an excessive '\0'
         # before the newline at the end.
 
-        spurt $file, self.html ~ "\n"
+        return spurt $file, self.html ~ "\n";
     }
 
 
@@ -108,12 +108,12 @@ has MMIOT $!mmiot;
 submethod BUILD(:$!mmiot) { * }
 
 
-method from-str(Str $str --> Text::Markdown::Discount:D)
+method from-str(Cool $str --> Text::Markdown::Discount:D)
 {
     return $?PACKAGE.new(mmiot => MMIOT.new(:$str));
 }
 
-method from-file(Str $file --> Text::Markdown::Discount:D)
+method from-file(Cool $file --> Text::Markdown::Discount:D)
 {
     return $?PACKAGE.new(mmiot => MMIOT.new(:$file));
 }
@@ -124,19 +124,19 @@ method to-str(Text::Markdown::Discount:D: --> Str)
     return $!mmiot.html;
 }
 
-method to-file(Text::Markdown::Discount:D: Str $file)
+method to-file(Text::Markdown::Discount:D: Str $file --> Bool)
 {
-    $!mmiot.html($file);
+    return $!mmiot.html($file);
 }
 
 
-multi sub markdown(Str:D $str, Cool $to-file?) is export
+multi sub markdown(Cool:D $str, Cool $to-file? --> Cool) is export
 {
     my $self = $?PACKAGE.from-str($str);
     return $to-file.defined ?? $self.to-file(~$to-file) !! $self.to-str;
 }
 
-multi sub markdown(IO::Path:D $file, Cool $to-file?) is export
+multi sub markdown(IO::Path:D $file, Cool $to-file? --> Cool) is export
 {
     my $self = $?PACKAGE.from-file(~$file);
     return $to-file.defined ?? $self.to-file(~$to-file) !! $self.to-str;
