@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/hartenfels/Text-Markdown-Discount.svg?branch=master)](https://travis-ci.org/hartenfels/Text-Markdown-Discount)
+
 NAME
 ====
 
@@ -68,7 +70,7 @@ You can call this method on both a class and an object instance.
 
     method from-file(Cool $file --> Text::Markdown::Discount:D)
 
-As [from-str](#from-str), except will read the markdown from the given `$file`.
+As [#from-str](#from-str), except will read the markdown from the given `$file`.
 
 ### to-str
 
@@ -94,7 +96,7 @@ These functions exist so that you can use `Text::Markdown::Discount` as a drop-i
     multi method new($text)
     sub parse-markdown($text) is export
 
-Dispatch to [from-str](#from-str).
+Dispatch to [#from-str](#from-str).
 
 ### render
 
@@ -106,14 +108,14 @@ Dispatch to [from-str](#from-str).
     method to-html()
     method to_html()
 
-Dispatch to [to-str](#to-str).
+Dispatch to [#to-str](#to-str).
 
 BUGS
 ====
 
 There's probably some bugs in the NativeCall handling. I'm not sure if the types are specified correctly and if the destructor for the native pointers gets called when it needs to.
 
-There seems to be a bug in Discount's `mkd_generatehtml` function, where it adds excessive `nul`s to the output if it has previously been compiled to a string. Due to that, the [to-file](#to-file) currently just `spurt`s the string output into the file.
+There seems to be a bug in Discount's `mkd_generatehtml` function, where it adds excessive `nul`s to the output if it has previously been compiled to a string. Due to that, the [#to-file](#to-file) currently just `spurt`s the string output into the file.
 
 Please report bugs [on GitHub](https://github.com/hartenfels/Text-Markdown-Discount/issues).
 
