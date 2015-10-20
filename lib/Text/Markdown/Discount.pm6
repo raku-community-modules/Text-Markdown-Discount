@@ -174,7 +174,8 @@ Text::Markdown::Discount - markdown to HTML using the Discount C library
     markdown($raw-md,        'sample.html');
     markdown('README.md'.IO, 'README.html');
 
-The API from L<Text::Markdown> is also supported:
+The API from L<Text::Markdown|https://github.com/retupmoca/p6-markdown/> is
+also supported:
 
     my $md = Text::Markdown::Discount.new($raw-md);
     say $md.render;
@@ -196,19 +197,104 @@ C<libmarkdown2-dev> package, the same goes for several Debians.  If it's
 not available as a binary for your system, you can compile it L<from
 source|https://github.com/Orc/discount>.
 
+=head2 Simple API
+
+=head3 markdown
+
+    sub markdown(    Cool:D $str,  Cool $to-file? --> Cool) is export
+    sub markdown(IO::Path:D $file, Cool $to-file? --> Cool) is export
+
+This function is probably enough for most cases. It will either take the
+markdown from the given C<$str> or C<$file> and convert it to HTML. If
+C<$to-file> is given, the result will be written to the file at that path
+and returns C<True>. Otherwise returns a C<Str> with the HTML in it.
+
+Will throw an exception if there's a problem reading or writing files, or if
+the markdown can't be converted for some reason.
+
+=head2 Object API
+
+=head3 from-str
+
+    method from-str(Cool $str --> Text::Markdown::Discount:D)
+
+Parses the given C<$str> as markdown and returns an object you can call HTML
+conversion methods on.
+
+You can call this method on both a class and an object instance.
+
+=head3 from-file
+
+    method from-file(Cool $file --> Text::Markdown::Discount:D)
+
+As L<#from-str>, except will read the markdown from the given C<$file>.
+
+=head3 to-str
+
+    method to-str(Text::Markdown::Discount:D: --> Str)
+
+Converts the markdown in the caller into HTML and returns the result.
+
+=head3 to-file
+
+    method to-file(Text::Markdown::Discount:D: Str $file --> Bool)
+
+Converts the markdown in the caller into HTML and writes the result to the
+given C<$file>. Returns C<True> or an appropriate C<Failure>.
+
+=head2 Text::Markdown Compatibility
+
+These functions exist so that you can use C<Text::Markdown::Discount> as a
+drop-in replacement for
+L<Text::Markdown|https://github.com/retupmoca/p6-markdown/>. They just dispatch
+to existing functions:
+
+=head3 new
+=head3 parse-markdown
+
+    multi method new($text)
+    sub parse-markdown($text) is export
+
+Dispatch to L<#from-str>.
+
+=head3 render
+=head3 to-html
+=head3 to_html
+
+    method render()
+    method to-html()
+    method to_html()
+
+Dispatch to L<#to-str>.
+
+=head1 BUGS
+
+There's probably some bugs in the NativeCall handling. I'm not sure if the
+types are specified correctly and if the destructor for the native pointers
+gets called when it needs to.
+
+There seems to be a bug in Discount's C<mkd_generatehtml> function, where it
+adds excessive C<nul>s to the output if it has previously been compiled to a
+string. Due to that, the L<#to-file> currently just C<spurt>s the string
+output into the file.
+
+Please report bugs
+L<on GitHub|https://github.com/hartenfels/Text-Markdown-Discount/issues>.
+
 =head1 TODO
 
 =item Support for the various flags in Discount
 =item Make sure that my NativeCall usage is correct
+=item Appropriate exception classes
 =item Finish this documentation
 
 =head1 AUTHOR
 
-Carsten Hartenfels <carsten.hartenfels@googlemail.com>
+L<Carsten Hartenfels|mailto:carsten.hartenfels@googlemail.com>
 
 =head1 SEE ALSO
 
-L<Text::Markdown>,
+L<Text::Markdown|https://github.com/retupmoca/p6-markdown/>,
 L<Discount|http://www.pell.portland.or.us/~orc/Code/discount/>,
 L<Discount GitHub repository|https://github.com/Orc/discount>.
 
