@@ -8,7 +8,7 @@ Text::Markdown::Discount - markdown to HTML using the Discount C library
 VERSION
 =======
 
-0.1.2
+0.1.3
 
 SYNOPSIS
 ========
