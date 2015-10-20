@@ -296,7 +296,8 @@ L<Carsten Hartenfels|mailto:carsten.hartenfels@googlemail.com>
 
 L<Text::Markdown|https://github.com/retupmoca/p6-markdown/>,
 L<Discount|http://www.pell.portland.or.us/~orc/Code/discount/>,
-L<Discount GitHub repository|https://github.com/Orc/discount>.
+L<Discount GitHub repository|https://github.com/Orc/discount>,
+L<Text::Markdown::Discount for Perl 5|https://metacpan.org/pod/Text::Markdown::Discount>.
 
 =head1 COPYRIGHT AND LICENSE
 

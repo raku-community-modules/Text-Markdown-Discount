@@ -138,7 +138,7 @@ AUTHOR
 SEE ALSO
 ========
 
-[Text::Markdown](https://github.com/retupmoca/p6-markdown/), [Discount](http://www.pell.portland.or.us/~orc/Code/discount/), [Discount GitHub repository](https://github.com/Orc/discount).
+[Text::Markdown](https://github.com/retupmoca/p6-markdown/), [Discount](http://www.pell.portland.or.us/~orc/Code/discount/), [Discount GitHub repository](https://github.com/Orc/discount), [Text::Markdown::Discount for Perl 5](https://metacpan.org/pod/Text::Markdown::Discount).
 
 COPYRIGHT AND LICENSE
 =====================
