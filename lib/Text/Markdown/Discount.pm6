@@ -69,7 +69,7 @@ class MMIOT is repr('CPointer')
     }
 
 
-    multi method html(MMIOT:D: --> Str)
+    method html-to-str(MMIOT:D: --> Str)
     {
         mkd_compile(self, 0) or fail "Can't compile markdown";
 
@@ -83,7 +83,7 @@ class MMIOT is repr('CPointer')
         return $buf[0];
     }
 
-    multi method html(MMIOT:D: Str $file --> Bool)
+    method html-to-file(MMIOT:D: Str $file --> Bool)
     {
         # mkd_compile(self, 0) or fail "Can't compile markdown";
         # my $fh = FILE.open($file, 'w');
