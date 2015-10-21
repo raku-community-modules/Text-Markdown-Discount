@@ -53,25 +53,25 @@ class MMIOT is repr('CPointer')
         is native('libmarkdown') { * }
 
 
-    method from-str(Cool $str --> MMIOT:D)
+    method from-str(Cool $str, int32 $flags --> MMIOT:D)
     {
         my int32 $bytes = $str.encode('UTF-8').elems;
-        return mkd_string(~$str, $bytes, 0);
+        return mkd_string(~$str, $bytes, $flags);
     }
 
-    method from-file(Cool $file --> MMIOT:D)
+    method from-file(Cool $file, int32 $flags --> MMIOT:D)
     {
         my $fh   = FILE.open(~$file, 'r');
-        my $self = try mkd_in($fh, 0);
+        my $self = try mkd_in($fh, $flags);
         $fh.close;
         fail $! without $self;
         return $self;
     }
 
 
-    method html-to-str(MMIOT:D: --> Str)
+    method html-to-str(MMIOT:D: int32 $flags --> Str)
     {
-        mkd_compile(self, 0) or fail "Can't compile markdown";
+        mkd_compile(self, $flags) or fail "Can't compile markdown";
 
         # Need a `char**`.
         my $buf = CArray[Str].new;
@@ -83,7 +83,7 @@ class MMIOT is repr('CPointer')
         return $buf[0];
     }
 
-    method html-to-file(MMIOT:D: Str $file --> Bool)
+    method html-to-file(MMIOT:D: Str $file, int32 $flags --> Bool)
     {
         # mkd_compile(self, 0) or fail "Can't compile markdown";
         # my $fh = FILE.open($file, 'w');
@@ -94,7 +94,15 @@ class MMIOT is repr('CPointer')
         # compiled to a string before, it throws an excessive '\0'
         # before the newline at the end.
 
-        return spurt $file, self.html ~ "\n";
+        return spurt $file, self.html-to-str($flags) ~ "\n";
+    }
+
+
+    method flags(MMIOT:D: Cool $f, Cool $to-file)
+    {
+        my $fh = FILE.open($to-file ?? ~$f !! +$f, 'w');
+        mkd_mmiot_flags($fh, self, 0);
+        $fh.close;
     }
 
 
@@ -106,42 +114,105 @@ class MMIOT is repr('CPointer')
 }
 
 
-has MMIOT $!mmiot;
+# These are #defines in Discount, so they don't get compiled into symbols.
+# It's ugly to just hard-code these in here, but I don't know what else to do.
+our %discount-flags = (
+    NOLINKS          => 0x00000001,
+    NOIMAGE          => 0x00000002,
+    NOPANTS          => 0x00000004,
+    NOHTML           => 0x00000008,
+    STRICT           => 0x00000010,
+    TAGTEXT          => 0x00000020,
+    NOEXT            => 0x00000040,
+    CDATA            => 0x00000080,
+    NOSUPERSCRIPT    => 0x00000100,
+    NORELAXED        => 0x00000200,
+    NOTABLES         => 0x00000400,
+    NOSTRIKETHROUGH  => 0x00000800,
+    TOC              => 0x00001000,
+    COMPAT           => 0x00002000,
+    AUTOLINK         => 0x00004000,
+    SAFELINK         => 0x00008000,
+    NOHEADER         => 0x00010000,
+    TABSTOP          => 0x00020000,
+    NODIVQUOTE       => 0x00040000,
+    NOALPHALIST      => 0x00080000,
+    NODLIST          => 0x00100000,
+    EXTRA_FOOTNOTE   => 0x00200000,
+    NOSTYLE          => 0x00400000,
+    NODLDISCOUNT     => 0x00800000,
+    DLEXTRA          => 0x01000000,
+    FENCEDCODE       => 0x02000000,
+    IDANCHOR         => 0x04000000,
+    GITHUBTAGS       => 0x08000000,
+    URLENCODEDANCHOR => 0x10000000,
+);
 
-submethod BUILD(:$!mmiot) { * }
-
-
-method from-str(Cool $str --> Text::Markdown::Discount:D)
+our sub make-flags(%fs --> Int)
 {
-    return $?PACKAGE.new(mmiot => MMIOT.new(:$str));
+    [+|] %fs.kv.map: -> $k, $v
+    {
+        my $key = $k.uc;
+        if    %discount-flags{   $key } -> $flag { $flag if  $v         }
+        elsif %discount-flags{"NO$key"} -> $flag { $flag if !$v         }
+        else                              { fail "Don't know flag '$k'" }
+    }
 }
 
-method from-file(Cool $file --> Text::Markdown::Discount:D)
+
+has MMIOT $!mmiot;
+has Int   $!flags;
+
+submethod BUILD(:$!mmiot, :$!flags) { * }
+
+
+method from(Str $meth, Cool $arg, %flags --> Text::Markdown::Discount:D)
 {
-    return $?PACKAGE.new(mmiot => MMIOT.new(:$file));
+    my Int $flags = make-flags(%flags);
+    return $?PACKAGE.new(
+        mmiot => MMIOT."$meth"($arg, $flags),
+        flags => $flags,
+    );
+}
+
+method from-str(Cool $str, *%flags --> Text::Markdown::Discount:D)
+{
+    return self.from('from-str', $str, %flags);
+}
+
+method from-file(Cool $file, *%flags --> Text::Markdown::Discount:D)
+{
+    return self.from('from-file', $file, %flags);
 }
 
 
 method to-str(Text::Markdown::Discount:D: --> Str)
 {
-    return $!mmiot.html;
+    return $!mmiot.html-to-str($!flags);
 }
 
 method to-file(Text::Markdown::Discount:D: Str $file --> Bool)
 {
-    return $!mmiot.html($file);
+    return $!mmiot.html-to-file($file, $!flags);
 }
 
 
-multi sub markdown(Cool:D $str, Cool $to-file? --> Cool) is export
+multi method dump-flags(Cool:D $fd = 1, Cool :$to-file)
 {
-    my $self = $?PACKAGE.from-str($str);
+    # This will guess that 0 and 1 are supposed to be stdout and stderr.
+    $!mmiot.flags($fd, $to-file // $fd !~~ /^<[01]>$/);
+}
+
+
+multi sub markdown(Cool:D $str, Cool $to-file?, *%flags --> Cool) is export
+{
+    my $self = $?PACKAGE.from-str($str, |%flags);
     return $to-file.defined ?? $self.to-file(~$to-file) !! $self.to-str;
 }
 
-multi sub markdown(IO::Path:D $file, Cool $to-file? --> Cool) is export
+multi sub markdown(IO::Path:D $file, Cool $to-file?, *%flags --> Cool) is export
 {
-    my $self = $?PACKAGE.from-file(~$file);
+    my $self = $?PACKAGE.from-file(~$file, |%flags);
     return $to-file.defined ?? $self.to-file(~$to-file) !! $self.to-str;
 }
 
