@@ -46,17 +46,20 @@ class MMIOT is repr('CPointer')
     sub mkd_generatehtml(MMIOT, FILE --> int32)
         is native('libmarkdown') { * }
 
+    sub mkd_mmiot_flags(FILE, MMIOT, int32)
+        is native('libmarkdown') { * }
+
     sub mkd_cleanup(MMIOT)
         is native('libmarkdown') { * }
 
 
-    multi method new(Cool :$str! --> MMIOT:D)
+    method from-str(Cool $str --> MMIOT:D)
     {
         my int32 $bytes = $str.encode('UTF-8').elems;
         return mkd_string(~$str, $bytes, 0);
     }
 
-    multi method new(Cool :$file! --> MMIOT:D)
+    method from-file(Cool $file --> MMIOT:D)
     {
         my $fh   = FILE.open(~$file, 'r');
         my $self = try mkd_in($fh, 0);
