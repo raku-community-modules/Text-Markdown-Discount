@@ -23,4 +23,12 @@ is markdown($simple.md.IO), $simple.to.trim,   'file to string';
 }
 
 
+for {}, {:nolinks}, {:nohtml}, {:nolinks, :nohtml}
+{
+    my $mod = join '.', sort .keys;
+    is markdown($html.from, |$_), $html.to($mod).trim,
+       "HTML conversion ({.keys})";
+}
+
+
 done-testing

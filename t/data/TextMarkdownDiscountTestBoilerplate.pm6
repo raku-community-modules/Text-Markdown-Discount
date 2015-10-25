@@ -14,17 +14,15 @@ our $data is export = $?FILE.IO.dirname;
 
 class TestFile
 {
-    has $.md;
-    has $.html;
-    has $.from;
-    has $.to;
+    has $.file;
 
-    multi method new(Str $file)
-    {
-        my $md   = "$data/$file.md";
-        my $html = "$data/$file.html";
-        self.bless(:$md, :$html, :from(slurp $md), :to(slurp $html))
-    }
+    multi method new(Str $file) { self.bless(:$file) }
+
+    method   md(         ) { "$data/$.file.md"                     }
+    method html(Str $mod?) { "$data/$.file\.{"$mod." if $mod}html" }
+    method from(         ) { slurp self.md                         }
+    method   to(Str $mod?) { slurp self.html($mod)                 }
 };
 
 our $simple is export = TestFile.new('simple');
+our $html   is export = TestFile.new( 'html' );
