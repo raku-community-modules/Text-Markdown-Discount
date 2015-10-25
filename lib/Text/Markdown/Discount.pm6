@@ -7,6 +7,9 @@ class FILE is repr('CPointer')
     sub fopen(Str, Str --> FILE)
         is native(Str) { * }
 
+    sub fdopen(int32, Str --> FILE)
+        is native(Str) { * }
+
     sub fclose(FILE --> int32)
         is native(Str) { * }
 
@@ -14,10 +17,16 @@ class FILE is repr('CPointer')
     # Don't wanna use `strerror` because it's not thread-safe.
 
 
-    method open(Str $file, Str $mode --> FILE)
+    multi method open(Str $file, Str $mode --> FILE)
     {
         fopen($file, $mode)
             or fail "Can't fopen '$file' with mode '$mode' (errno $errno)"
+    }
+
+    multi method open(Int $fd, Str $mode --> FILE)
+    {
+        fdopen($fd, $mode)
+            or fail "Can't fdopen '$fd' with mode '$mode' (errno $errno)"
     }
 
     method close()
