@@ -206,7 +206,7 @@ method to-file(Text::Markdown::Discount:D: Str $file --> Bool)
 }
 
 
-multi method dump-flags(Cool:D $fd = 1, Cool :$to-file)
+method dump-flags(Cool:D $fd = 1, Cool :$to-file)
 {
     # This will guess that 0 and 1 are supposed to be stdout and stderr.
     $!mmiot.flags($fd, $to-file // $fd !~~ /^<[01]>$/);
