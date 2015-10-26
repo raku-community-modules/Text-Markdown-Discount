@@ -227,11 +227,12 @@ multi sub markdown(IO::Path:D $file, Cool $to-file?, *%flags --> Cool) is export
 
 
 # Compatibility with Text::Markdown
-multi method new($text)                      { self.from-str($text)      }
-method       render()                        { self.to-str               }
-method       to-html()                       { self.to-str               }
-method       to_html()                       { self.to_str               }
-sub          parse-markdown($text) is export { $?PACKAGE.from-str($text) }
+multi method new($text, *%flags)             { self.from-str($text, |%flags) }
+method       render()                        { self.to-str                   }
+method       to-html()                       { self.to-str                   }
+method       to_html()                       { self.to_str                   }
+
+sub parse-markdown($text, *%flags) is export { $?PACKAGE.from-str($text, |%flags) }
 
 
 =begin pod
