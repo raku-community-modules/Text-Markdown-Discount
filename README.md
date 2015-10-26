@@ -8,7 +8,7 @@ Text::Markdown::Discount - markdown to HTML using the Discount C library
 VERSION
 =======
 
-0.2.1
+0.2.2
 
 SYNOPSIS
 ========
@@ -90,9 +90,10 @@ Converts the markdown in the caller into HTML and writes the result to the given
 
 ### dump-flags
 
-    method dump-flags(Cool:D $fd = 1, Cool :$to-file)
+    multi method dump-flags(Int:D $fd = 1)
+    multi method dump-flags(Str:D $file)
 
-Dumps all flag options applied to the caller. If a path is given for the `$to-file` parameter, the dump will be written there. Otherwise it will be written to the file descriptor given in `$fd`, defaulting to `1` (stderr).
+Dumps all flag options applied to the caller. Either to the given `$file` path, or to the file descriptor `$fd`. Defaults to dumping to file descriptor 1 (stderr).
 
 This function may be useful in figuring out if the Discount library you're linked to actually has the flags you need.
 
