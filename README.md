@@ -8,7 +8,7 @@ Text::Markdown::Discount - markdown to HTML using the Discount C library
 VERSION
 =======
 
-0.1.3
+0.2.0
 
 SYNOPSIS
 ========
@@ -43,13 +43,109 @@ This library provides bindings to the [Discount library](https://github.com/Orc/
 
 On Ubuntu 15.04, it's available via `apt-get` as the `libmarkdown2-dev` package, the same goes for several Debians. If it's not available as a binary for your system, you can compile it [from source](https://github.com/Orc/discount).
 
+### Flags
+
+Discount provides a variety of flags that change how the conversion behavior. You can pass flags to all routines that take a `*%flags` parameter.
+
+The following list of flags is taken from [Discount's documentation](http://www.pell.portland.or.us/~orc/Code/discount/). Depending on your version of the library, they might not all be available, see [#dump-flags](#dump-flags).
+
+All of these flags map to the respective `MKD_` constants. The keys are case-insensitive. Constants that originally start with `NO` can be used without it and negated. For example, `:!links` is the same as `:nolinks`.
+
+  * `:!links`, `:nolinks`
+
+Don't do link processing, block `<a> ` tags
+
+  * `:!image`, `:noimage`
+
+Don't do image processing, block `<img> `
+
+  * `:!pants`, `:nopants`
+
+Don't run `smartypants()`
+
+  * `:!html`, `:nohtml`
+
+Don't allow raw html through **AT ALL**
+
+  * `:strict`
+
+Disable `SUPERSCRIPT`, `RELAXED_EMPHASIS`
+
+  * `:tagtext`
+
+Process text inside an html tag; no `<em> `, no `<bold> `, no html or `[]` expansion
+
+  * `:!ext`, `:noext`
+
+Don't allow pseudo-protocols
+
+  * `:cdata`
+
+Generate code for xml `![CDATA[...]]`
+
+  * `:!superscript`, `:nosuperscript`
+
+No `A^B`
+
+  * `:!relaxed`, `:norelaxed`
+
+Emphasis happens *everywhere*
+
+  * `:!tables`, `:notables`
+
+Don't process [PHP Markdown Extra](http://michelf.com/projects/php-markdown/extra/) tables.
+
+  * `:!strikethrough`, `:nostrikethrough`
+
+Forbid `~~strikethrough~~`
+
+  * `:toc`
+
+Do table-of-contents processing
+
+  * `:compat`
+
+Compatability with MarkdownTest_1.0
+
+  * `:autolink`
+
+Make `http://foo.com` a link even without `<> `s
+
+  * `:safelink`
+
+Paranoid check for link protocol
+
+  * `:!header`, `:noheader`
+
+Don't process document headers
+
+  * `:tabstop`
+
+Expand tabs to 4 spaces
+
+  * `:!divquote`, `:nodivquote`
+
+Forbid `>%class% ` blocks
+
+  * `:!alphalist`, `:noalphalist`
+
+Forbid alphabetic lists
+
+  * `:!dlist`, `:nodlist`
+
+Forbid definition lists
+
+  * `:extra_footnote`
+
+Enable [PHP Markdown Extra](http://michelf.com/projects/php-markdown/extra/)-style footnotes.
+
 Simple API
 ----------
 
 ### markdown
 
-    sub markdown(    Cool:D $str,  Cool $to-file? --> Cool) is export
-    sub markdown(IO::Path:D $file, Cool $to-file? --> Cool) is export
+    sub markdown(    Cool:D $str,  Cool $to-file?, *%flags --> Cool) is export
+    sub markdown(IO::Path:D $file, Cool $to-file?, *%flags --> Cool) is export
 
 This function is probably enough for most cases. It will either take the markdown from the given `$str` or `$file` and convert it to HTML. If `$to-file` is given, the result will be written to the file at that path and returns `True`. Otherwise returns a `Str` with the HTML in it.
 
@@ -60,7 +156,7 @@ Object API
 
 ### from-str
 
-    method from-str(Cool $str --> Text::Markdown::Discount:D)
+    method from-str(Cool $str, *%flags --> Text::Markdown::Discount:D)
 
 Parses the given `$str` as markdown and returns an object you can call HTML conversion methods on.
 
@@ -68,7 +164,7 @@ You can call this method on both a class and an object instance.
 
 ### from-file
 
-    method from-file(Cool $file --> Text::Markdown::Discount:D)
+    method from-file(Cool $file, *%flags --> Text::Markdown::Discount:D)
 
 As [#from-str](#from-str), except will read the markdown from the given `$file`.
 
@@ -83,6 +179,14 @@ Converts the markdown in the caller into HTML and returns the result.
     method to-file(Text::Markdown::Discount:D: Str $file --> Bool)
 
 Converts the markdown in the caller into HTML and writes the result to the given `$file`. Returns `True` or an appropriate `Failure`.
+
+### dump-flags
+
+    method dump-flags(Cool:D $fd = 1, Cool :$to-file)
+
+Dumps all flag options applied to the caller. If a path is given for the `$to-file` parameter, the dump will be written there. Otherwise it will be written to the file descriptor given in `$fd`, defaulting to `1` (stderr).
+
+This function may be useful in figuring out if the Discount library you're linked to actually has the flags you need.
 
 Text::Markdown Compatibility
 ----------------------------
