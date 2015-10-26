@@ -55,7 +55,7 @@ class MMIOT is repr('CPointer')
     sub mkd_generatehtml(MMIOT, FILE --> int32)
         is native('libmarkdown') { * }
 
-    sub mkd_mmiot_flags(FILE, MMIOT, int32)
+    sub mkd_flags_are(FILE, int32, int32)
         is native('libmarkdown') { * }
 
     sub mkd_cleanup(MMIOT)
@@ -107,10 +107,10 @@ class MMIOT is repr('CPointer')
     }
 
 
-    method flags(MMIOT:D: Cool $f, Cool $to-file)
+    method flags(MMIOT:D: Cool $f, int32 $flags, Bool $to-file)
     {
         my $fh = FILE.open($to-file ?? ~$f !! +$f, 'w');
-        mkd_mmiot_flags($fh, self, 0);
+        mkd_flags_are($fh, $flags, 0);
         $fh.close;
     }
 
@@ -206,11 +206,8 @@ method to-file(Text::Markdown::Discount:D: Str $file --> Bool)
 }
 
 
-method dump-flags(Cool:D $fd = 1, Cool :$to-file)
-{
-    # This will guess that 0 and 1 are supposed to be stdout and stderr.
-    $!mmiot.flags($fd, $to-file // $fd !~~ /^<[01]>$/);
-}
+multi method dump-flags(Int:D $fd = 1) { $!mmiot.flags($fd,   $!flags, False) }
+multi method dump-flags(Str:D $file  ) { $!mmiot.flags($file, $!flags, True ) }
 
 
 multi sub markdown(Cool:D $str, Cool $to-file?, *%flags --> Cool) is export
@@ -332,11 +329,12 @@ given C<$file>. Returns C<True> or an appropriate C<Failure>.
 
 =head3 dump-flags
 
-    method dump-flags(Cool:D $fd = 1, Cool :$to-file)
+    multi method dump-flags(Int:D $fd = 1)
+    multi method dump-flags(Str:D $file)
 
-Dumps all flag options applied to the caller. If a path is given for the
-C<$to-file> parameter, the dump will be written there. Otherwise it will be
-written to the file descriptor given in C<$fd>, defaulting to C<1> (stderr).
+Dumps all flag options applied to the caller. Either to the given C<$file>
+path, or to the file descriptor C<$fd>. Defaults to dumping to file descriptor
+1 (stderr).
 
 This function may be useful in figuring out if the Discount library you're
 linked to actually has the flags you need.
