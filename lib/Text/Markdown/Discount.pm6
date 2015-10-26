@@ -242,7 +242,7 @@ Text::Markdown::Discount - markdown to HTML using the Discount C library
 
 =head1 VERSION
 
-0.1.3
+0.2.0
 
 =head1 SYNOPSIS
 
@@ -280,12 +280,118 @@ C<libmarkdown2-dev> package, the same goes for several Debians.  If it's
 not available as a binary for your system, you can compile it L<from
 source|https://github.com/Orc/discount>.
 
+=head3 Flags
+
+Discount provides a variety of flags that change how the conversion behavior.
+You can pass flags to all routines that take a C<*%flags> parameter.
+
+The following list of flags is taken from
+L<Discount's documentation|http://www.pell.portland.or.us/~orc/Code/discount/>.
+Depending on your version of the library, they might not all be available, see
+L<#dump-flags>.
+
+All of these flags map to the respective C<MKD_> constants. The keys are
+case-insensitive. Constants that originally start with C<NO> can be used without
+it and negated. For example, C<:!links> is the same as C<:nolinks>.
+
+=item C<:!links>, C<:nolinks>
+
+Don't do link processing, block C<< <a> >> tags
+
+=item C<:!image>, C<:noimage>
+
+Don't do image processing, block C<< <img> >>
+
+=item C<:!pants>, C<:nopants>
+
+Don't run C<smartypants()>
+
+=item C<:!html>, C<:nohtml>
+
+Don't allow raw html through B<AT ALL>
+
+=item C<:strict>
+
+Disable C<SUPERSCRIPT>, C<RELAXED_EMPHASIS>
+
+=item C<:tagtext>
+
+Process text inside an html tag; no C<< <em> >>, no C<< <bold> >>, no html or
+C<[]> expansion
+
+=item C<:!ext>, C<:noext>
+
+Don't allow pseudo-protocols
+
+=item C<:cdata>
+
+Generate code for xml C<![CDATA[...]]>
+
+=item C<:!superscript>, C<:nosuperscript>
+
+No C<A^B>
+
+=item C<:!relaxed>, C<:norelaxed>
+
+Emphasis happens I<everywhere>
+
+=item C<:!tables>, C<:notables>
+
+Don't process
+L<PHP Markdown Extra|http://michelf.com/projects/php-markdown/extra/> tables.
+
+=item C<:!strikethrough>, C<:nostrikethrough>
+
+Forbid C<~~strikethrough~~>
+
+=item C<:toc>
+
+Do table-of-contents processing
+
+=item C<:compat>
+
+Compatability with MarkdownTest_1.0
+
+=item C<:autolink>
+
+Make C<http://foo.com> a link even without C<< <> >>s
+
+=item C<:safelink>
+
+Paranoid check for link protocol
+
+=item C<:!header>, C<:noheader>
+
+Don't process document headers
+
+=item C<:tabstop>
+
+Expand tabs to 4 spaces
+
+=item C<:!divquote>, C<:nodivquote>
+
+Forbid C<< >%class% >> blocks
+
+=item C<:!alphalist>, C<:noalphalist>
+
+Forbid alphabetic lists
+
+=item C<:!dlist>, C<:nodlist>
+
+Forbid definition lists
+
+=item C<:extra_footnote>
+
+Enable
+L<PHP Markdown Extra|http://michelf.com/projects/php-markdown/extra/>-style
+footnotes.
+
 =head2 Simple API
 
 =head3 markdown
 
-    sub markdown(    Cool:D $str,  Cool $to-file? --> Cool) is export
-    sub markdown(IO::Path:D $file, Cool $to-file? --> Cool) is export
+    sub markdown(    Cool:D $str,  Cool $to-file?, *%flags --> Cool) is export
+    sub markdown(IO::Path:D $file, Cool $to-file?, *%flags --> Cool) is export
 
 This function is probably enough for most cases. It will either take the
 markdown from the given C<$str> or C<$file> and convert it to HTML. If
@@ -299,7 +405,7 @@ the markdown can't be converted for some reason.
 
 =head3 from-str
 
-    method from-str(Cool $str --> Text::Markdown::Discount:D)
+    method from-str(Cool $str, *%flags --> Text::Markdown::Discount:D)
 
 Parses the given C<$str> as markdown and returns an object you can call HTML
 conversion methods on.
@@ -308,7 +414,7 @@ You can call this method on both a class and an object instance.
 
 =head3 from-file
 
-    method from-file(Cool $file --> Text::Markdown::Discount:D)
+    method from-file(Cool $file, *%flags --> Text::Markdown::Discount:D)
 
 As L<#from-str>, except will read the markdown from the given C<$file>.
 
@@ -324,6 +430,17 @@ Converts the markdown in the caller into HTML and returns the result.
 
 Converts the markdown in the caller into HTML and writes the result to the
 given C<$file>. Returns C<True> or an appropriate C<Failure>.
+
+=head3 dump-flags
+
+    method dump-flags(Cool:D $fd = 1, Cool :$to-file)
+
+Dumps all flag options applied to the caller. If a path is given for the
+C<$to-file> parameter, the dump will be written there. Otherwise it will be
+written to the file descriptor given in C<$fd>, defaulting to C<1> (stderr).
+
+This function may be useful in figuring out if the Discount library you're
+linked to actually has the flags you need.
 
 =head2 Text::Markdown Compatibility
 
