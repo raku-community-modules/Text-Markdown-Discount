@@ -29,6 +29,19 @@ sub test-outputs(Text::Markdown::Discount:D $markdown)
     test-outputs($markdown);
 }
 
+
+for {}, {:nolinks}, {:nohtml}, {:nolinks, :nohtml}
+{
+    my $mod = join '.', sort .keys;
+
+    is Text::Markdown::Discount.from-str($html.from, |$_).to-str,
+       $html.to($mod).trim, "from string with flags ({.keys})";
+
+    is Text::Markdown::Discount.from-file($html.md, |$_).to-str,
+       $html.to($mod).trim, "from file with flags ({.keys})";
+}
+
+
 dies-ok { Text::Markdown::Discount.from-file("$data/nonexistent.md") },
         'sourcing from nonexistent file fails';
 
