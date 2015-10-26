@@ -294,93 +294,93 @@ All of these flags map to the respective C<MKD_> constants. The keys are
 case-insensitive. Constants that originally start with C<NO> can be used without
 it and negated. For example, C<:!links> is the same as C<:nolinks>.
 
-=item C<:!links>, C<:nolinks>
+=defn C<:!links>, C<:nolinks>
 
 Don't do link processing, block C<< <a> >> tags
 
-=item C<:!image>, C<:noimage>
+=defn C<:!image>, C<:noimage>
 
 Don't do image processing, block C<< <img> >>
 
-=item C<:!pants>, C<:nopants>
+=defn C<:!pants>, C<:nopants>
 
 Don't run C<smartypants()>
 
-=item C<:!html>, C<:nohtml>
+=defn C<:!html>, C<:nohtml>
 
 Don't allow raw html through B<AT ALL>
 
-=item C<:strict>
+=defn C<:strict>
 
 Disable C<SUPERSCRIPT>, C<RELAXED_EMPHASIS>
 
-=item C<:tagtext>
+=defn C<:tagtext>
 
 Process text inside an html tag; no C<< <em> >>, no C<< <bold> >>, no html or
 C<[]> expansion
 
-=item C<:!ext>, C<:noext>
+=defn C<:!ext>, C<:noext>
 
 Don't allow pseudo-protocols
 
-=item C<:cdata>
+=defn C<:cdata>
 
 Generate code for xml C<![CDATA[...]]>
 
-=item C<:!superscript>, C<:nosuperscript>
+=defn C<:!superscript>, C<:nosuperscript>
 
 No C<A^B>
 
-=item C<:!relaxed>, C<:norelaxed>
+=defn C<:!relaxed>, C<:norelaxed>
 
 Emphasis happens I<everywhere>
 
-=item C<:!tables>, C<:notables>
+=defn C<:!tables>, C<:notables>
 
 Don't process
 L<PHP Markdown Extra|http://michelf.com/projects/php-markdown/extra/> tables.
 
-=item C<:!strikethrough>, C<:nostrikethrough>
+=defn C<:!strikethrough>, C<:nostrikethrough>
 
 Forbid C<~~strikethrough~~>
 
-=item C<:toc>
+=defn C<:toc>
 
 Do table-of-contents processing
 
-=item C<:compat>
+=defn C<:compat>
 
 Compatability with MarkdownTest_1.0
 
-=item C<:autolink>
+=defn C<:autolink>
 
 Make C<http://foo.com> a link even without C<< <> >>s
 
-=item C<:safelink>
+=defn C<:safelink>
 
 Paranoid check for link protocol
 
-=item C<:!header>, C<:noheader>
+=defn C<:!header>, C<:noheader>
 
 Don't process document headers
 
-=item C<:tabstop>
+=defn C<:tabstop>
 
 Expand tabs to 4 spaces
 
-=item C<:!divquote>, C<:nodivquote>
+=defn C<:!divquote>, C<:nodivquote>
 
 Forbid C<< >%class% >> blocks
 
-=item C<:!alphalist>, C<:noalphalist>
+=defn C<:!alphalist>, C<:noalphalist>
 
 Forbid alphabetic lists
 
-=item C<:!dlist>, C<:nodlist>
+=defn C<:!dlist>, C<:nodlist>
 
 Forbid definition lists
 
-=item C<:extra_footnote>
+=defn C<:extra_footnote>
 
 Enable
 L<PHP Markdown Extra|http://michelf.com/projects/php-markdown/extra/>-style
@@ -483,7 +483,6 @@ L<on GitHub|https://github.com/hartenfels/Text-Markdown-Discount/issues>.
 
 =head1 TODO
 
-=item Support for the various flags in Discount
 =item Make sure that my NativeCall usage is correct
 =item Appropriate exception classes
 =item Finish this documentation

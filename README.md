@@ -51,91 +51,91 @@ The following list of flags is taken from [Discount's documentation](http://www.
 
 All of these flags map to the respective `MKD_` constants. The keys are case-insensitive. Constants that originally start with `NO` can be used without it and negated. For example, `:!links` is the same as `:nolinks`.
 
-  * `:!links`, `:nolinks`
+`:!links`, `:nolinks`
 
 Don't do link processing, block `<a> ` tags
 
-  * `:!image`, `:noimage`
+`:!image`, `:noimage`
 
 Don't do image processing, block `<img> `
 
-  * `:!pants`, `:nopants`
+`:!pants`, `:nopants`
 
 Don't run `smartypants()`
 
-  * `:!html`, `:nohtml`
+`:!html`, `:nohtml`
 
 Don't allow raw html through **AT ALL**
 
-  * `:strict`
+`:strict`
 
 Disable `SUPERSCRIPT`, `RELAXED_EMPHASIS`
 
-  * `:tagtext`
+`:tagtext`
 
 Process text inside an html tag; no `<em> `, no `<bold> `, no html or `[]` expansion
 
-  * `:!ext`, `:noext`
+`:!ext`, `:noext`
 
 Don't allow pseudo-protocols
 
-  * `:cdata`
+`:cdata`
 
 Generate code for xml `![CDATA[...]]`
 
-  * `:!superscript`, `:nosuperscript`
+`:!superscript`, `:nosuperscript`
 
 No `A^B`
 
-  * `:!relaxed`, `:norelaxed`
+`:!relaxed`, `:norelaxed`
 
 Emphasis happens *everywhere*
 
-  * `:!tables`, `:notables`
+`:!tables`, `:notables`
 
 Don't process [PHP Markdown Extra](http://michelf.com/projects/php-markdown/extra/) tables.
 
-  * `:!strikethrough`, `:nostrikethrough`
+`:!strikethrough`, `:nostrikethrough`
 
 Forbid `~~strikethrough~~`
 
-  * `:toc`
+`:toc`
 
 Do table-of-contents processing
 
-  * `:compat`
+`:compat`
 
 Compatability with MarkdownTest_1.0
 
-  * `:autolink`
+`:autolink`
 
 Make `http://foo.com` a link even without `<> `s
 
-  * `:safelink`
+`:safelink`
 
 Paranoid check for link protocol
 
-  * `:!header`, `:noheader`
+`:!header`, `:noheader`
 
 Don't process document headers
 
-  * `:tabstop`
+`:tabstop`
 
 Expand tabs to 4 spaces
 
-  * `:!divquote`, `:nodivquote`
+`:!divquote`, `:nodivquote`
 
 Forbid `>%class% ` blocks
 
-  * `:!alphalist`, `:noalphalist`
+`:!alphalist`, `:noalphalist`
 
 Forbid alphabetic lists
 
-  * `:!dlist`, `:nodlist`
+`:!dlist`, `:nodlist`
 
 Forbid definition lists
 
-  * `:extra_footnote`
+`:extra_footnote`
 
 Enable [PHP Markdown Extra](http://michelf.com/projects/php-markdown/extra/)-style footnotes.
 
@@ -225,8 +225,6 @@ Please report bugs [on GitHub](https://github.com/hartenfels/Text-Markdown-Disco
 
 TODO
 ====
-
-  * Support for the various flags in Discount
 
   * Make sure that my NativeCall usage is correct
 
