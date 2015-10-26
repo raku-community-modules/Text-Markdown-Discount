@@ -8,7 +8,7 @@ Text::Markdown::Discount - markdown to HTML using the Discount C library
 VERSION
 =======
 
-0.2.0
+0.2.1
 
 SYNOPSIS
 ========
@@ -43,7 +43,87 @@ This library provides bindings to the [Discount library](https://github.com/Orc/
 
 On Ubuntu 15.04, it's available via `apt-get` as the `libmarkdown2-dev` package, the same goes for several Debians. If it's not available as a binary for your system, you can compile it [from source](https://github.com/Orc/discount).
 
-### Flags
+Simple API
+----------
+
+### markdown
+
+    sub markdown(    Cool:D $str,  Cool $to-file?, *%flags --> Cool) is export
+    sub markdown(IO::Path:D $file, Cool $to-file?, *%flags --> Cool) is export
+
+This function is probably enough for most cases. It will either take the markdown from the given `$str` or `$file` and convert it to HTML. If `$to-file` is given, the result will be written to the file at that path and returns `True`. Otherwise returns a `Str` with the HTML in it.
+
+Will throw an exception if there's a problem reading or writing files, or if the markdown can't be converted for some reason.
+
+See [#Flags](#Flags) about the `*%flags` parameter.
+
+Object API
+----------
+
+### from-str
+
+    method from-str(Cool $str, *%flags --> Text::Markdown::Discount:D)
+
+Parses the given `$str` as markdown and returns an object you can call HTML conversion methods on.
+
+You can call this method on both a class and an object instance.
+
+See [#Flags](#Flags) about the `*%flags` parameter.
+
+### from-file
+
+    method from-file(Cool $file, *%flags --> Text::Markdown::Discount:D)
+
+As [#from-str](#from-str), except will read the markdown from the given `$file`.
+
+### to-str
+
+    method to-str(Text::Markdown::Discount:D: --> Str)
+
+Converts the markdown in the caller into HTML and returns the result.
+
+### to-file
+
+    method to-file(Text::Markdown::Discount:D: Str $file --> Bool)
+
+Converts the markdown in the caller into HTML and writes the result to the given `$file`. Returns `True` or an appropriate `Failure`.
+
+### dump-flags
+
+    method dump-flags(Cool:D $fd = 1, Cool :$to-file)
+
+Dumps all flag options applied to the caller. If a path is given for the `$to-file` parameter, the dump will be written there. Otherwise it will be written to the file descriptor given in `$fd`, defaulting to `1` (stderr).
+
+This function may be useful in figuring out if the Discount library you're linked to actually has the flags you need.
+
+Text::Markdown Compatibility
+----------------------------
+
+These functions exist so that you can use `Text::Markdown::Discount` as a drop-in replacement for [Text::Markdown](https://github.com/retupmoca/p6-markdown/). They just dispatch to existing functions:
+
+### new
+
+### parse-markdown
+
+    multi method new($text, *%flags)
+    sub parse-markdown($text *%flags) is export
+
+Dispatch to [#from-str](#from-str).
+
+### render
+
+### to-html
+
+### to_html
+
+    method render()
+    method to-html()
+    method to_html()
+
+Dispatch to [#to-str](#to-str).
+
+Flags
+-----
 
 Discount provides a variety of flags that change how the conversion behavior. You can pass flags to all routines that take a `*%flags` parameter.
 
@@ -138,81 +218,6 @@ Forbid definition lists
 `:extra_footnote`
 
 Enable [PHP Markdown Extra](http://michelf.com/projects/php-markdown/extra/)-style footnotes.
-
-Simple API
-----------
-
-### markdown
-
-    sub markdown(    Cool:D $str,  Cool $to-file?, *%flags --> Cool) is export
-    sub markdown(IO::Path:D $file, Cool $to-file?, *%flags --> Cool) is export
-
-This function is probably enough for most cases. It will either take the markdown from the given `$str` or `$file` and convert it to HTML. If `$to-file` is given, the result will be written to the file at that path and returns `True`. Otherwise returns a `Str` with the HTML in it.
-
-Will throw an exception if there's a problem reading or writing files, or if the markdown can't be converted for some reason.
-
-Object API
-----------
-
-### from-str
-
-    method from-str(Cool $str, *%flags --> Text::Markdown::Discount:D)
-
-Parses the given `$str` as markdown and returns an object you can call HTML conversion methods on.
-
-You can call this method on both a class and an object instance.
-
-### from-file
-
-    method from-file(Cool $file, *%flags --> Text::Markdown::Discount:D)
-
-As [#from-str](#from-str), except will read the markdown from the given `$file`.
-
-### to-str
-
-    method to-str(Text::Markdown::Discount:D: --> Str)
-
-Converts the markdown in the caller into HTML and returns the result.
-
-### to-file
-
-    method to-file(Text::Markdown::Discount:D: Str $file --> Bool)
-
-Converts the markdown in the caller into HTML and writes the result to the given `$file`. Returns `True` or an appropriate `Failure`.
-
-### dump-flags
-
-    method dump-flags(Cool:D $fd = 1, Cool :$to-file)
-
-Dumps all flag options applied to the caller. If a path is given for the `$to-file` parameter, the dump will be written there. Otherwise it will be written to the file descriptor given in `$fd`, defaulting to `1` (stderr).
-
-This function may be useful in figuring out if the Discount library you're linked to actually has the flags you need.
-
-Text::Markdown Compatibility
-----------------------------
-
-These functions exist so that you can use `Text::Markdown::Discount` as a drop-in replacement for [Text::Markdown](https://github.com/retupmoca/p6-markdown/). They just dispatch to existing functions:
-
-### new
-
-### parse-markdown
-
-    multi method new($text)
-    sub parse-markdown($text) is export
-
-Dispatch to [#from-str](#from-str).
-
-### render
-
-### to-html
-
-### to_html
-
-    method render()
-    method to-html()
-    method to_html()
-
-Dispatch to [#to-str](#to-str).
 
 BUGS
 ====

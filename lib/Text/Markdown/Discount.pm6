@@ -243,7 +243,7 @@ Text::Markdown::Discount - markdown to HTML using the Discount C library
 
 =head1 VERSION
 
-0.2.0
+0.2.1
 
 =head1 SYNOPSIS
 
@@ -281,7 +281,92 @@ C<libmarkdown2-dev> package, the same goes for several Debians.  If it's
 not available as a binary for your system, you can compile it L<from
 source|https://github.com/Orc/discount>.
 
-=head3 Flags
+=head2 Simple API
+
+=head3 markdown
+
+    sub markdown(    Cool:D $str,  Cool $to-file?, *%flags --> Cool) is export
+    sub markdown(IO::Path:D $file, Cool $to-file?, *%flags --> Cool) is export
+
+This function is probably enough for most cases. It will either take the
+markdown from the given C<$str> or C<$file> and convert it to HTML. If
+C<$to-file> is given, the result will be written to the file at that path
+and returns C<True>. Otherwise returns a C<Str> with the HTML in it.
+
+Will throw an exception if there's a problem reading or writing files, or if
+the markdown can't be converted for some reason.
+
+See L<#Flags> about the C<*%flags> parameter.
+
+=head2 Object API
+
+=head3 from-str
+
+    method from-str(Cool $str, *%flags --> Text::Markdown::Discount:D)
+
+Parses the given C<$str> as markdown and returns an object you can call HTML
+conversion methods on.
+
+You can call this method on both a class and an object instance.
+
+See L<#Flags> about the C<*%flags> parameter.
+
+=head3 from-file
+
+    method from-file(Cool $file, *%flags --> Text::Markdown::Discount:D)
+
+As L<#from-str>, except will read the markdown from the given C<$file>.
+
+=head3 to-str
+
+    method to-str(Text::Markdown::Discount:D: --> Str)
+
+Converts the markdown in the caller into HTML and returns the result.
+
+=head3 to-file
+
+    method to-file(Text::Markdown::Discount:D: Str $file --> Bool)
+
+Converts the markdown in the caller into HTML and writes the result to the
+given C<$file>. Returns C<True> or an appropriate C<Failure>.
+
+=head3 dump-flags
+
+    method dump-flags(Cool:D $fd = 1, Cool :$to-file)
+
+Dumps all flag options applied to the caller. If a path is given for the
+C<$to-file> parameter, the dump will be written there. Otherwise it will be
+written to the file descriptor given in C<$fd>, defaulting to C<1> (stderr).
+
+This function may be useful in figuring out if the Discount library you're
+linked to actually has the flags you need.
+
+=head2 Text::Markdown Compatibility
+
+These functions exist so that you can use C<Text::Markdown::Discount> as a
+drop-in replacement for
+L<Text::Markdown|https://github.com/retupmoca/p6-markdown/>. They just dispatch
+to existing functions:
+
+=head3 new
+=head3 parse-markdown
+
+    multi method new($text, *%flags)
+    sub parse-markdown($text *%flags) is export
+
+Dispatch to L<#from-str>.
+
+=head3 render
+=head3 to-html
+=head3 to_html
+
+    method render()
+    method to-html()
+    method to_html()
+
+Dispatch to L<#to-str>.
+
+=head2 Flags
 
 Discount provides a variety of flags that change how the conversion behavior.
 You can pass flags to all routines that take a C<*%flags> parameter.
@@ -386,87 +471,6 @@ Forbid definition lists
 Enable
 L<PHP Markdown Extra|http://michelf.com/projects/php-markdown/extra/>-style
 footnotes.
-
-=head2 Simple API
-
-=head3 markdown
-
-    sub markdown(    Cool:D $str,  Cool $to-file?, *%flags --> Cool) is export
-    sub markdown(IO::Path:D $file, Cool $to-file?, *%flags --> Cool) is export
-
-This function is probably enough for most cases. It will either take the
-markdown from the given C<$str> or C<$file> and convert it to HTML. If
-C<$to-file> is given, the result will be written to the file at that path
-and returns C<True>. Otherwise returns a C<Str> with the HTML in it.
-
-Will throw an exception if there's a problem reading or writing files, or if
-the markdown can't be converted for some reason.
-
-=head2 Object API
-
-=head3 from-str
-
-    method from-str(Cool $str, *%flags --> Text::Markdown::Discount:D)
-
-Parses the given C<$str> as markdown and returns an object you can call HTML
-conversion methods on.
-
-You can call this method on both a class and an object instance.
-
-=head3 from-file
-
-    method from-file(Cool $file, *%flags --> Text::Markdown::Discount:D)
-
-As L<#from-str>, except will read the markdown from the given C<$file>.
-
-=head3 to-str
-
-    method to-str(Text::Markdown::Discount:D: --> Str)
-
-Converts the markdown in the caller into HTML and returns the result.
-
-=head3 to-file
-
-    method to-file(Text::Markdown::Discount:D: Str $file --> Bool)
-
-Converts the markdown in the caller into HTML and writes the result to the
-given C<$file>. Returns C<True> or an appropriate C<Failure>.
-
-=head3 dump-flags
-
-    method dump-flags(Cool:D $fd = 1, Cool :$to-file)
-
-Dumps all flag options applied to the caller. If a path is given for the
-C<$to-file> parameter, the dump will be written there. Otherwise it will be
-written to the file descriptor given in C<$fd>, defaulting to C<1> (stderr).
-
-This function may be useful in figuring out if the Discount library you're
-linked to actually has the flags you need.
-
-=head2 Text::Markdown Compatibility
-
-These functions exist so that you can use C<Text::Markdown::Discount> as a
-drop-in replacement for
-L<Text::Markdown|https://github.com/retupmoca/p6-markdown/>. They just dispatch
-to existing functions:
-
-=head3 new
-=head3 parse-markdown
-
-    multi method new($text)
-    sub parse-markdown($text) is export
-
-Dispatch to L<#from-str>.
-
-=head3 render
-=head3 to-html
-=head3 to_html
-
-    method render()
-    method to-html()
-    method to_html()
-
-Dispatch to L<#to-str>.
 
 =head1 BUGS
 
