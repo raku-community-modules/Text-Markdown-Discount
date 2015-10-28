@@ -277,7 +277,7 @@ Text::Markdown::Discount - markdown to HTML using the Discount C library
 
 =head1 VERSION
 
-0.2.2
+0.2.3
 
 =head1 SYNOPSIS
 
@@ -524,7 +524,6 @@ L<on GitHub|https://github.com/hartenfels/Text-Markdown-Discount/issues>.
 =head1 TODO
 
 =item Make sure that my NativeCall usage is correct
-=item Appropriate exception classes
 =item Finish this documentation
 
 =head1 AUTHOR
