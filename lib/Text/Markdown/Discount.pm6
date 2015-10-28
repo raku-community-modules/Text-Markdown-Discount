@@ -177,11 +177,9 @@ submethod BUILD(:$!mmiot, :$!flags) { * }
 
 method from(Str $meth, Cool $arg, %flags --> Text::Markdown::Discount:D)
 {
-    my Int $flags = make-flags(%flags);
-    return $?PACKAGE.new(
-        mmiot => MMIOT."$meth"($arg, $flags),
-        flags => $flags,
-    );
+    my Int   $flags = make-flags(%flags);
+    my MMIOT $mmiot.= "$meth"($arg, $flags);
+    return $?PACKAGE.new(:$mmiot, :$flags);
 }
 
 method from-str(Cool $str, *%flags --> Text::Markdown::Discount:D)
