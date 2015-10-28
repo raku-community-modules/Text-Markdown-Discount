@@ -27,8 +27,11 @@ is f({:LINKS(Any), :ImAgE(1), :NOhtml, :noexT(''), :STRICT('y'), :cdata(0)}),
    'case and actual value of flags does not matter';
 
 
-dies-ok { f(:nonexistent)          }, 'single nonexistent flag dies';
-dies-ok { f(:strict, :nonexistent) }, 'nonexistent flag amongst real flag dies';
+throws-like { f({:nonexistent}) }, X::Text::Markdown::Discount::Flag,
+            'single nonexistent flag dies';
+
+throws-like { f({:strict, :nonexistent}) }, X::Text::Markdown::Discount::Flag,
+            'nonexistent flag amongst real flag dies';
 
 
 done-testing

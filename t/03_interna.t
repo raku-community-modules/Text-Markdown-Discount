@@ -42,8 +42,9 @@ for {}, {:nolinks}, {:nohtml}, {:nolinks, :nohtml}
 }
 
 
-dies-ok { Text::Markdown::Discount.from-file("$data/nonexistent.md") },
-        'sourcing from nonexistent file fails';
+throws-like { Text::Markdown::Discount.from-file("$data/nonexistent.md") },
+            X::Text::Markdown::Discount::File,
+            'sourcing from nonexistent file fails';
 
 
 done-testing
