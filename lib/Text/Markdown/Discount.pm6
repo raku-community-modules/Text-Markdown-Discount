@@ -351,11 +351,17 @@ See L<#Flags> about the C<*%flags> parameter.
 
 As L<#from-str>, except will read the markdown from the given C<$file>.
 
+Will C<fail> with an L<#X::Text::Markdown::Discount::File> if it can't C<fopen>
+the given C<$file> and C<warn> if it can't C<fclose> it.
+
 =head3 to-str
 
     method to-str(Text::Markdown::Discount:D: --> Str)
 
 Converts the markdown in the caller into HTML and returns the result.
+
+Will C<fail> with a L<#X::Text::Markdown::Discount::File> if Discount can't
+compile the markdown for some reason.
 
 =head3 to-file
 
@@ -400,6 +406,35 @@ Dispatch to L<#from-str>.
     method to_html()
 
 Dispatch to L<#to-str>.
+
+=head2 Exceptions
+
+=head3 X::Text::Markdown::Discount
+
+    class X::Text::Markdown::Discount is Exception
+
+The base exception class for this module. All other exception types inherit from
+this. Not actually thrown directly.
+
+=head3 X::Text::Markdown::Discount::File
+
+    class X::Text::Markdown::Discount::File is X::Text::Markdown:Discount
+
+Thrown when an C<fopen>, C<fdopen> or C<fclose> fails. The latter will only be
+a warning.
+
+=head3 X::Text::Markdown::Discount::Flag
+
+    class X::Text::Markdown::Discount::Flag is X::Text::Markdown:Discount
+
+Thrown when you try to use a non-existent flag.
+
+=head3 X::Text::Markdown::Discount::Compile
+
+    class X::Text::Markdown::Discount::Compile is X::Text::Markdown:Discount
+
+Thrown when Discount can't compile markdown. I can't tell when this would
+happen or where to get the error message from though.
 
 =head2 Flags
 

@@ -8,7 +8,7 @@ Text::Markdown::Discount - markdown to HTML using the Discount C library
 VERSION
 =======
 
-0.2.2
+0.2.3
 
 SYNOPSIS
 ========
@@ -76,11 +76,15 @@ See [#Flags](#Flags) about the `*%flags` parameter.
 
 As [#from-str](#from-str), except will read the markdown from the given `$file`.
 
+Will `fail` with an [#X::Text::Markdown::Discount::File](#X::Text::Markdown::Discount::File) if it can't `fopen` the given `$file` and `warn` if it can't `fclose` it.
+
 ### to-str
 
     method to-str(Text::Markdown::Discount:D: --> Str)
 
 Converts the markdown in the caller into HTML and returns the result.
+
+Will `fail` with a [#X::Text::Markdown::Discount::File](#X::Text::Markdown::Discount::File) if Discount can't compile the markdown for some reason.
 
 ### to-file
 
@@ -122,6 +126,33 @@ Dispatch to [#from-str](#from-str).
     method to_html()
 
 Dispatch to [#to-str](#to-str).
+
+Exceptions
+----------
+
+### X::Text::Markdown::Discount
+
+    class X::Text::Markdown::Discount is Exception
+
+The base exception class for this module. All other exception types inherit from this. Not actually thrown directly.
+
+### X::Text::Markdown::Discount::File
+
+    class X::Text::Markdown::Discount::File is X::Text::Markdown:Discount
+
+Thrown when an `fopen`, `fdopen` or `fclose` fails. The latter will only be a warning.
+
+### X::Text::Markdown::Discount::Flag
+
+    class X::Text::Markdown::Discount::Flag is X::Text::Markdown:Discount
+
+Thrown when you try to use a non-existent flag.
+
+### X::Text::Markdown::Discount::Compile
+
+    class X::Text::Markdown::Discount::Compile is X::Text::Markdown:Discount
+
+Thrown when Discount can't compile markdown. I can't tell when this would happen or where to get the error message from though.
 
 Flags
 -----
@@ -233,8 +264,6 @@ TODO
 ====
 
   * Make sure that my NativeCall usage is correct
-
-  * Appropriate exception classes
 
   * Finish this documentation
 
