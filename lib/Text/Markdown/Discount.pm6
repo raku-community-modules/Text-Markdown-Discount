@@ -2,6 +2,44 @@ unit class Text::Markdown::Discount;
 use NativeCall;
 
 
+class X::Text::Markdown::Discount is Exception {}
+
+
+class X::Text::Markdown::Discount::File is X::Text::Markdown::Discount
+{
+    has Str   $.op;
+    has Cool  $.file;
+    has int32 $.errno;
+
+    sub strerror(int32 --> Str) is native(Str) { * }
+
+    method message() { "$.op '$.file'\: {strerror $.errno}" }
+}
+
+
+class X::Text::Markdown::Discount::Flag is X::Text::Markdown::Discount
+{
+    has Str $.flag;
+
+    multi method new(Str $flag) { self.bless(:$flag) }
+
+    method message() { "Unknown flag: '$.flag'" }
+}
+
+
+class X::Text::Markdown::Discount::Compile is X::Text::Markdown::Discount
+{
+    has Str $.message;
+
+    multi method new(Str $message) { self.bless(:$message) }
+}
+
+
+my \XFile    := X::Text::Markdown::Discount::File;
+my \XFlag    := X::Text::Markdown::Discount::Flag;
+my \XCompile := X::Text::Markdown::Discount::Compile;
+
+
 class FILE is repr('CPointer')
 {
     sub fopen(Str, Str --> FILE)
@@ -14,24 +52,24 @@ class FILE is repr('CPointer')
         is native(Str) { * }
 
     my $errno := cglobal(Str, 'errno', int32);
-    # Don't wanna use `strerror` because it's not thread-safe.
 
 
     multi method open(Str $file, Str $mode --> FILE)
     {
-        fopen($file, $mode)
-            or fail "Can't fopen '$file' with mode '$mode' (errno $errno)"
+        fopen($file, $mode) or fail XFile.new(:op("fopen '$mode'"),
+                                              :$file, :$errno);
     }
 
     multi method open(Int $fd, Str $mode --> FILE)
     {
-        fdopen($fd, $mode)
-            or fail "Can't fdopen '$fd' with mode '$mode' (errno $errno)"
+        fdopen($fd, $mode) or fail XFile.new(:op("fdopen '$mode'"),
+                                             :file($fd), :$errno);
     }
 
     method close()
     {
-        fclose(self) == 0 or warn "Error fclosing '{self}' (errno $errno)"
+        fclose(self) == 0 or warn XFile.new(:op("fclose"),
+                                            :file(~self), :$errno);
     }
 }
 
@@ -80,7 +118,8 @@ class MMIOT is repr('CPointer')
 
     method html-to-str(MMIOT:D: int32 $flags --> Str)
     {
-        mkd_compile(self, $flags) or fail "Can't compile markdown";
+        mkd_compile(self, $flags)
+            or fail XCompile.new("Can't compile markdown");
 
         # Need a `char**`.
         my $buf = CArray[Str].new;
@@ -161,10 +200,10 @@ our sub make-flags(%fs --> Int)
 {
     [+|] %fs.kv.map: -> $k, $v
     {
-        my $key = $k.uc;
-        if    %discount-flags{   $key } -> $flag { $flag if  $v         }
-        elsif %discount-flags{"NO$key"} -> $flag { $flag if !$v         }
-        else                              { fail "Don't know flag '$k'" }
+        my $key = uc ~$k;
+        if    %discount-flags{   $key } -> $flag { $flag if  $v        }
+        elsif %discount-flags{"NO$key"} -> $flag { $flag if !$v        }
+        else                                     { fail XFlag.new(~$k) }
     }
 }
 
