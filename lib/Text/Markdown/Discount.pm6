@@ -134,6 +134,8 @@ class MMIOT is repr('CPointer')
 
     method html-to-file(MMIOT:D: Str $file, int32 $flags --> Bool)
     {
+        # FIXME
+        #
         # mkd_compile(self, 0) or fail "Can't compile markdown";
         # my $fh = FILE.open($file, 'w');
         # mkd_generatehtml(self, $fh);
