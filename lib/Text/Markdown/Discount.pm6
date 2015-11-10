@@ -460,11 +460,11 @@ it and negated. For example, C<:!links> is the same as C<:nolinks>.
 
 =defn C<:!links>, C<:nolinks>
 
-Don't do link processing, block C<< <a> >> tags
+Don't do link processing, block C<< <a> >> tags.
 
 =defn C<:!image>, C<:noimage>
 
-Don't do image processing, block C<< <img> >>
+Don't do image processing, block C<< <img> >>.
 
 =defn C<:!pants>, C<:nopants>
 
@@ -472,32 +472,32 @@ Don't run C<smartypants()>
 
 =defn C<:!html>, C<:nohtml>
 
-Don't allow raw html through B<AT ALL>
+Don't allow raw html through B<AT ALL>.
 
 =defn C<:strict>
 
-Disable C<SUPERSCRIPT>, C<RELAXED_EMPHASIS>
+Disable C<SUPERSCRIPT>, C<RELAXED_EMPHASIS>.
 
 =defn C<:tagtext>
 
 Process text inside an html tag; no C<< <em> >>, no C<< <bold> >>, no html or
-C<[]> expansion
+C<[]> expansion.
 
 =defn C<:!ext>, C<:noext>
 
-Don't allow pseudo-protocols
+Don't allow pseudo-protocols.
 
 =defn C<:cdata>
 
-Generate code for xml C<![CDATA[...]]>
+Generate code for xml C<![CDATA[...]]>.
 
 =defn C<:!superscript>, C<:nosuperscript>
 
-No C<A^B>
+No C<A^B>.
 
 =defn C<:!relaxed>, C<:norelaxed>
 
-Emphasis happens I<everywhere>
+Emphasis happens I<everywhere>.
 
 =defn C<:!tables>, C<:notables>
 
@@ -506,43 +506,43 @@ L<PHP Markdown Extra|http://michelf.com/projects/php-markdown/extra/> tables.
 
 =defn C<:!strikethrough>, C<:nostrikethrough>
 
-Forbid C<~~strikethrough~~>
+Forbid C<~~strikethrough~~>.
 
 =defn C<:toc>
 
-Do table-of-contents processing
+Do table-of-contents processing.
 
 =defn C<:compat>
 
-Compatability with MarkdownTest_1.0
+Compatability with MarkdownTest_1.0.
 
 =defn C<:autolink>
 
-Make C<http://foo.com> a link even without C<< <> >>s
+Make C<http://foo.com> a link even without C<< <> >>s.
 
 =defn C<:safelink>
 
-Paranoid check for link protocol
+Paranoid check for link protocol.
 
 =defn C<:!header>, C<:noheader>
 
-Don't process document headers
+Don't process document headers.
 
 =defn C<:tabstop>
 
-Expand tabs to 4 spaces
+Expand tabs to 4 spaces.
 
 =defn C<:!divquote>, C<:nodivquote>
 
-Forbid C<< >%class% >> blocks
+Forbid C<< >%class% >> blocks.
 
 =defn C<:!alphalist>, C<:noalphalist>
 
-Forbid alphabetic lists
+Forbid alphabetic lists.
 
 =defn C<:!dlist>, C<:nodlist>
 
-Forbid definition lists
+Forbid definition lists.
 
 =defn C<:extra_footnote>
 

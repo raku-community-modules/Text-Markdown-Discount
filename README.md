@@ -170,11 +170,11 @@ All of these flags map to the respective `MKD_` constants. The keys are case-ins
 
 `:!links`, `:nolinks`
 
-Don't do link processing, block `<a> ` tags
+Don't do link processing, block `<a> ` tags.
 
 `:!image`, `:noimage`
 
-Don't do image processing, block `<img> `
+Don't do image processing, block `<img> `.
 
 `:!pants`, `:nopants`
 
@@ -182,31 +182,31 @@ Don't run `smartypants()`
 
 `:!html`, `:nohtml`
 
-Don't allow raw html through **AT ALL**
+Don't allow raw html through **AT ALL**.
 
 `:strict`
 
-Disable `SUPERSCRIPT`, `RELAXED_EMPHASIS`
+Disable `SUPERSCRIPT`, `RELAXED_EMPHASIS`.
 
 `:tagtext`
 
-Process text inside an html tag; no `<em> `, no `<bold> `, no html or `[]` expansion
+Process text inside an html tag; no `<em> `, no `<bold> `, no html or `[]` expansion.
 
 `:!ext`, `:noext`
 
-Don't allow pseudo-protocols
+Don't allow pseudo-protocols.
 
 `:cdata`
 
-Generate code for xml `![CDATA[...]]`
+Generate code for xml `![CDATA[...]]`.
 
 `:!superscript`, `:nosuperscript`
 
-No `A^B`
+No `A^B`.
 
 `:!relaxed`, `:norelaxed`
 
-Emphasis happens *everywhere*
+Emphasis happens *everywhere*.
 
 `:!tables`, `:notables`
 
@@ -214,43 +214,43 @@ Don't process [PHP Markdown Extra](http://michelf.com/projects/php-markdown/extr
 
 `:!strikethrough`, `:nostrikethrough`
 
-Forbid `~~strikethrough~~`
+Forbid `~~strikethrough~~`.
 
 `:toc`
 
-Do table-of-contents processing
+Do table-of-contents processing.
 
 `:compat`
 
-Compatability with MarkdownTest_1.0
+Compatability with MarkdownTest_1.0.
 
 `:autolink`
 
-Make `http://foo.com` a link even without `<> `s
+Make `http://foo.com` a link even without `<> `s.
 
 `:safelink`
 
-Paranoid check for link protocol
+Paranoid check for link protocol.
 
 `:!header`, `:noheader`
 
-Don't process document headers
+Don't process document headers.
 
 `:tabstop`
 
-Expand tabs to 4 spaces
+Expand tabs to 4 spaces.
 
 `:!divquote`, `:nodivquote`
 
-Forbid `>%class% ` blocks
+Forbid `>%class% ` blocks.
 
 `:!alphalist`, `:noalphalist`
 
-Forbid alphabetic lists
+Forbid alphabetic lists.
 
 `:!dlist`, `:nodlist`
 
-Forbid definition lists
+Forbid definition lists.
 
 `:extra_footnote`
 
