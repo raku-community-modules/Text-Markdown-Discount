@@ -24,6 +24,11 @@ SYNOPSIS
     markdown($raw-md,        'sample.html');
     markdown('README.md'.IO, 'README.html');
 
+You can also use the various [#Flags](#Flags) in Discount:
+
+    say markdown($raw-md, :autolink, :!image ); # AUTOLINK | NOIMAGE
+    say markdown($raw-md, :AUTOLINK, :NOIMAGE); # same thing
+
 The API from [Text::Markdown](https://github.com/retupmoca/p6-markdown/) is also supported:
 
     my $md = Text::Markdown::Discount.new($raw-md);

@@ -295,6 +295,11 @@ Text::Markdown::Discount - markdown to HTML using the Discount C library
     markdown($raw-md,        'sample.html');
     markdown('README.md'.IO, 'README.html');
 
+You can also use the various L<#Flags> in Discount:
+
+    say markdown($raw-md, :autolink, :!image ); # AUTOLINK | NOIMAGE
+    say markdown($raw-md, :AUTOLINK, :NOIMAGE); # same thing
+
 The API from L<Text::Markdown|https://github.com/retupmoca/p6-markdown/> is
 also supported:
 
