@@ -87,6 +87,7 @@ class MMIOT is repr('CPointer')
 
     # XXX This should take a `char**` to write to, but I can't make `Pointer`
     #     dance that way. It's also scary to just write to a `Str` like that.
+    #     I tried `Str is rw`, but that just segfaults.
     sub mkd_document(MMIOT, CArray[Str] --> int32)
         is native('libmarkdown') { * }
 
