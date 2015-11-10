@@ -280,7 +280,7 @@ Text::Markdown::Discount - markdown to HTML using the Discount C library
 
 =head1 VERSION
 
-0.2.3
+0.2.4
 
 =head1 SYNOPSIS
 
