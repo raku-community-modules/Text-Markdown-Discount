@@ -77,28 +77,28 @@ class FILE is repr('CPointer')
 class MMIOT is repr('CPointer')
 {
     sub mkd_string(Str, int32, int32 --> MMIOT)
-        is native('libmarkdown') { * }
+        is native('markdown') { * }
 
     sub mkd_in(OpaquePointer, int32 --> MMIOT)
-        is native('libmarkdown') { * }
+        is native('markdown') { * }
 
     sub mkd_compile(MMIOT, int32 --> int32)
-        is native('libmarkdown') { * }
+        is native('markdown') { * }
 
     # XXX This should take a `char**` to write to, but I can't make `Pointer`
     #     dance that way. It's also scary to just write to a `Str` like that.
     #     I tried `Str is rw`, but that just segfaults.
     sub mkd_document(MMIOT, CArray[Str] --> int32)
-        is native('libmarkdown') { * }
+        is native('markdown') { * }
 
     sub mkd_generatehtml(MMIOT, FILE --> int32)
-        is native('libmarkdown') { * }
+        is native('markdown') { * }
 
     sub mkd_flags_are(FILE, int32, int32)
-        is native('libmarkdown') { * }
+        is native('markdown') { * }
 
     sub mkd_cleanup(MMIOT)
-        is native('libmarkdown') { * }
+        is native('markdown') { * }
 
 
     method from-str(Cool $str, int32 $flags --> MMIOT:D)
