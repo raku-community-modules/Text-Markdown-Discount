@@ -100,6 +100,18 @@ class MMIOT is repr('CPointer')
     sub mkd_cleanup(MMIOT)
         is native('markdown') { * }
 
+    sub mkd_doc_title(MMIOT)
+        returns Str is encoded('utf8')
+        is native('markdown') { * }
+
+    sub mkd_doc_author(MMIOT)
+        returns Str is encoded('utf8')
+        is native('markdown') { * }
+
+    sub mkd_doc_date(MMIOT)
+        returns Str is encoded('utf8')
+        is native('markdown') { * }
+
 
     method from-str(Cool $str, int32 $flags --> MMIOT:D)
     {
@@ -114,6 +126,19 @@ class MMIOT is repr('CPointer')
         $fh.close;
         fail $! without $self;
         return $self;
+    }
+
+
+    method title(MMIOT:D: --> Str) {
+      return mkd_doc_title(self);
+    }
+
+    method author(MMIOT:D: --> Str) {
+      return mkd_doc_author(self);
+    }
+
+    method date(MMIOT:D: --> Str) {
+      return mkd_doc_date(self);
     }
 
 
@@ -243,6 +268,18 @@ method to-str(Text::Markdown::Discount:D: --> Str)
 method to-file(Text::Markdown::Discount:D: Str $file --> Bool)
 {
     return $!mmiot.html-to-file($file, $!flags);
+}
+
+method title(Text::Markdown::Discount:D: --> Str) {
+  return $!mmiot.title;
+}
+
+method author(Text::Markdown::Discount:D: --> Str) {
+  return $!mmiot.author;
+}
+
+method date(Text::Markdown::Discount:D: --> Str) {
+  return $!mmiot.date;
 }
 
 
@@ -389,6 +426,24 @@ path, or to the file descriptor C<$fd>. Defaults to dumping to file descriptor
 
 This function may be useful in figuring out if the Discount library you're
 linked to actually has the flags you need.
+
+=head3 title
+
+    method title(Text::Markdown::Discount:D: --> Str)
+
+Returns the title parsed from the document header.
+
+=head3 author
+
+    method author(Text::Markdown::Discount:D: --> Str)
+
+Returns the author parsed from the document header.
+
+=head3 date
+
+    method date(Text::Markdown::Discount:D: --> Str)
+
+Returns the date parsed from the document header.
 
 =head2 Text::Markdown Compatibility
 

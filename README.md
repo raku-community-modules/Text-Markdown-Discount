@@ -106,6 +106,24 @@ Dumps all flag options applied to the caller. Either to the given `$file` path, 
 
 This function may be useful in figuring out if the Discount library you're linked to actually has the flags you need.
 
+### title
+
+    method title(Text::Markdown::Discount:D: --> Str)
+
+Returns the title parsed from the document header.
+
+### author
+
+    method author(Text::Markdown::Discount:D: --> Str)
+
+Returns the author parsed from the document header.
+
+### date
+
+    method date(Text::Markdown::Discount:D: --> Str)
+
+Returns the date parsed from the document header.
+
 Text::Markdown Compatibility
 ----------------------------
 
