@@ -12,8 +12,7 @@ sub tmpname() is export { tmpnam(Pointer[int8]) } # calls `tmpnam(NULL)`
 our $data is export = $?FILE.IO.dirname;
 
 
-class TestFile
-{
+class TestFile {
     has $.file;
 
     multi method new(Str $file) { self.bless(:$file) }

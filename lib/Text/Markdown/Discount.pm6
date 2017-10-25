@@ -5,8 +5,7 @@ use NativeCall;
 class X::Text::Markdown::Discount is Exception {}
 
 
-class X::Text::Markdown::Discount::File is X::Text::Markdown::Discount
-{
+class X::Text::Markdown::Discount::File is X::Text::Markdown::Discount {
     has Str   $.op;
     has Cool  $.file;
     has int32 $.errno;
@@ -17,8 +16,7 @@ class X::Text::Markdown::Discount::File is X::Text::Markdown::Discount
 }
 
 
-class X::Text::Markdown::Discount::Flag is X::Text::Markdown::Discount
-{
+class X::Text::Markdown::Discount::Flag is X::Text::Markdown::Discount {
     has Str $.flag;
 
     multi method new(Str $flag) { self.bless(:$flag) }
@@ -27,8 +25,7 @@ class X::Text::Markdown::Discount::Flag is X::Text::Markdown::Discount
 }
 
 
-class X::Text::Markdown::Discount::Compile is X::Text::Markdown::Discount
-{
+class X::Text::Markdown::Discount::Compile is X::Text::Markdown::Discount {
     has Str $.message;
 
     multi method new(Str $message) { self.bless(:$message) }
@@ -40,8 +37,7 @@ my \XFlag    := X::Text::Markdown::Discount::Flag;
 my \XCompile := X::Text::Markdown::Discount::Compile;
 
 
-class FILE is repr('CPointer')
-{
+class FILE is repr('CPointer') {
     sub fopen(Str, Str --> FILE)
         is native(Str) { * }
 
@@ -54,28 +50,24 @@ class FILE is repr('CPointer')
     my $errno := cglobal(Str, 'errno', int32);
 
 
-    multi method open(Str $file, Str $mode --> FILE)
-    {
+    multi method open(Str $file, Str $mode --> FILE) {
         fopen($file, $mode) or fail XFile.new(:op("fopen '$mode'"),
                                               :$file, :$errno);
     }
 
-    multi method open(Int $fd, Str $mode --> FILE)
-    {
+    multi method open(Int $fd, Str $mode --> FILE) {
         fdopen($fd, $mode) or fail XFile.new(:op("fdopen '$mode'"),
                                              :file($fd), :$errno);
     }
 
-    method close()
-    {
+    method close() {
         fclose(self) == 0 or warn XFile.new(:op("fclose"),
                                             :file(~self), :$errno);
     }
 }
 
 
-class MMIOT is repr('CPointer')
-{
+class MMIOT is repr('CPointer') {
     sub mkd_string(Str, int32, int32 --> MMIOT)
         is native('markdown') { * }
 
@@ -113,14 +105,12 @@ class MMIOT is repr('CPointer')
         is native('markdown') { * }
 
 
-    method from-str(Cool $str, int32 $flags --> MMIOT:D)
-    {
+    method from-str(Cool $str, int32 $flags --> MMIOT:D) {
         my int32 $bytes = $str.encode('UTF-8').elems;
         return mkd_string(~$str, $bytes, $flags);
     }
 
-    method from-file(Cool $file, int32 $flags --> MMIOT:D)
-    {
+    method from-file(Cool $file, int32 $flags --> MMIOT:D) {
         my $fh   = FILE.open(~$file, 'r');
         my $self = try mkd_in($fh, $flags);
         $fh.close;
@@ -130,20 +120,19 @@ class MMIOT is repr('CPointer')
 
 
     method title(MMIOT:D: --> Str) {
-      return mkd_doc_title(self);
+        return mkd_doc_title(self);
     }
 
     method author(MMIOT:D: --> Str) {
-      return mkd_doc_author(self);
+        return mkd_doc_author(self);
     }
 
     method date(MMIOT:D: --> Str) {
-      return mkd_doc_date(self);
+        return mkd_doc_date(self);
     }
 
 
-    method html-to-str(MMIOT:D: int32 $flags --> Str)
-    {
+    method html-to-str(MMIOT:D: int32 $flags --> Str) {
         mkd_compile(self, $flags)
             or fail XCompile.new("Can't compile markdown");
 
@@ -157,8 +146,7 @@ class MMIOT is repr('CPointer')
         return $buf[0];
     }
 
-    method html-to-file(MMIOT:D: Str $file, int32 $flags --> Bool)
-    {
+    method html-to-file(MMIOT:D: Str $file, int32 $flags --> Bool) {
         # FIXME
         #
         # mkd_compile(self, 0) or fail "Can't compile markdown";
@@ -174,8 +162,7 @@ class MMIOT is repr('CPointer')
     }
 
 
-    method flags(MMIOT:D: Cool $f, int32 $flags, Bool $to-file)
-    {
+    method flags(MMIOT:D: Cool $f, int32 $flags, Bool $to-file) {
         my $fh = FILE.open($to-file ?? ~$f !! +$f, 'w');
         mkd_flags_are($fh, $flags, 0);
         $fh.close;
@@ -183,8 +170,7 @@ class MMIOT is repr('CPointer')
 
 
     # FIXME Does this actually get called?
-    method DESTROY
-    {
+    method DESTROY {
         mkd_cleanup(self);
     }
 }
@@ -224,15 +210,13 @@ our %discount-flags = (
     URLENCODEDANCHOR => 0x10000000,
 );
 
-our sub make-flags(%fs --> Int)
-{
-    [+|] %fs.kv.map: -> $k, $v
-    {
+our sub make-flags(%fs --> Int) {
+    return [+|] %fs.kv.map: -> $k, $v {
         my $key = uc ~$k;
         if    %discount-flags{   $key } -> $flag { $flag if  $v        }
         elsif %discount-flags{"NO$key"} -> $flag { $flag if !$v        }
         else                                     { fail XFlag.new(~$k) }
-    }
+    };
 }
 
 
@@ -242,44 +226,39 @@ has Int   $!flags;
 submethod BUILD(:$!mmiot, :$!flags) { * }
 
 
-method from(Str $meth, Cool $arg, %flags --> Text::Markdown::Discount:D)
-{
+method from(Str $meth, Cool $arg, %flags --> Text::Markdown::Discount:D) {
     my Int   $flags = make-flags(%flags);
     my MMIOT $mmiot.= "$meth"($arg, $flags);
     return $?PACKAGE.new(:$mmiot, :$flags);
 }
 
-method from-str(Cool $str, *%flags --> Text::Markdown::Discount:D)
-{
+method from-str(Cool $str, *%flags --> Text::Markdown::Discount:D) {
     return self.from('from-str', $str, %flags);
 }
 
-method from-file(Cool $file, *%flags --> Text::Markdown::Discount:D)
-{
+method from-file(Cool $file, *%flags --> Text::Markdown::Discount:D) {
     return self.from('from-file', $file, %flags);
 }
 
 
-method to-str(Text::Markdown::Discount:D: --> Str)
-{
+method to-str(Text::Markdown::Discount:D: --> Str) {
     return $!mmiot.html-to-str($!flags);
 }
 
-method to-file(Text::Markdown::Discount:D: Str $file --> Bool)
-{
+method to-file(Text::Markdown::Discount:D: Str $file --> Bool) {
     return $!mmiot.html-to-file($file, $!flags);
 }
 
 method title(Text::Markdown::Discount:D: --> Str) {
-  return $!mmiot.title;
+    return $!mmiot.title;
 }
 
 method author(Text::Markdown::Discount:D: --> Str) {
-  return $!mmiot.author;
+    return $!mmiot.author;
 }
 
 method date(Text::Markdown::Discount:D: --> Str) {
-  return $!mmiot.date;
+    return $!mmiot.date;
 }
 
 
@@ -287,14 +266,12 @@ multi method dump-flags(Int:D $fd = 1) { $!mmiot.flags($fd,   $!flags, False) }
 multi method dump-flags(Str:D $file  ) { $!mmiot.flags($file, $!flags, True ) }
 
 
-multi sub markdown(Cool:D $str, Cool $to-file?, *%flags --> Cool) is export
-{
+multi sub markdown(Cool:D $str, Cool $to-file?, *%flags --> Cool) is export {
     my $self = $?PACKAGE.from-str($str, |%flags);
     return $to-file.defined ?? $self.to-file(~$to-file) !! $self.to-str;
 }
 
-multi sub markdown(IO::Path:D $file, Cool $to-file?, *%flags --> Cool) is export
-{
+multi sub markdown(IO::Path:D $file, Cool $to-file?, *%flags --> Cool) is export {
     my $self = $?PACKAGE.from-file(~$file, |%flags);
     return $to-file.defined ?? $self.to-file(~$to-file) !! $self.to-str;
 }
