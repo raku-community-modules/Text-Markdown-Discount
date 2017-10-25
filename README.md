@@ -292,10 +292,12 @@ TODO
 
   * Finish this documentation
 
-AUTHOR
-======
+AUTHORS
+=======
 
-[Carsten Hartenfels](mailto:carsten.hartenfels@googlemail.com)
+  * [Ilmari Vacklin](https://github.com/wolverian) - support for document headers.
+
+  * [Carsten Hartenfels](https://github.com/hartenfels) - original author.
 
 SEE ALSO
 ========
@@ -305,7 +307,7 @@ SEE ALSO
 COPYRIGHT AND LICENSE
 =====================
 
-This software is copyright (c) 2015 by Carsten Hartenfels.
+This software is copyright 2015 - 2017 by Carsten Hartenfels, with some parts copyright 2017 by Ilmari Vacklin.
 
 This program is distributed under the terms of the Artistic License 2.0.
 

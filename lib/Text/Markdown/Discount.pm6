@@ -602,9 +602,10 @@ L<on GitHub|https://github.com/hartenfels/Text-Markdown-Discount/issues>.
 =item Make sure that my NativeCall usage is correct
 =item Finish this documentation
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-L<Carsten Hartenfels|mailto:carsten.hartenfels@googlemail.com>
+=item L<Ilmari Vacklin|https://github.com/wolverian> - support for document headers.
+=item L<Carsten Hartenfels|https://github.com/hartenfels> - original author.
 
 =head1 SEE ALSO
 
@@ -615,7 +616,8 @@ L<Text::Markdown::Discount for Perl 5|https://metacpan.org/pod/Text::Markdown::D
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2015 by Carsten Hartenfels.
+This software is copyright 2015 - 2017 by Carsten Hartenfels, with some parts
+copyright 2017 by Ilmari Vacklin.
 
 This program is distributed under the terms of the Artistic License 2.0.
 
