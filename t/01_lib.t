@@ -3,16 +3,13 @@ use Test;
 use NativeCall;
 
 
-my $got-lib = lives-ok
-{
+my $got-lib = lives-ok {
     my $version := cglobal 'markdown', 'markdown_version', Pointer[int8];
     say "# markdown_version: $version";
-},
-'libmarkdown is installed';
+}, 'libmarkdown is installed';
 
 
-unless $got-lib
-{
+unless $got-lib {
     diag q:to/HERE/;
 
         * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -27,4 +24,4 @@ unless $got-lib
 }
 
 
-done-testing
+done-testing;

@@ -1,12 +1,11 @@
-unit class Text::Markdown::Discount;
+unit class Text::Markdown::Discount:ver<0.3.0>:auth<github:hartenfels>;
 use NativeCall;
 
 
 class X::Text::Markdown::Discount is Exception {}
 
 
-class X::Text::Markdown::Discount::File is X::Text::Markdown::Discount
-{
+class X::Text::Markdown::Discount::File is X::Text::Markdown::Discount {
     has Str   $.op;
     has Cool  $.file;
     has int32 $.errno;
@@ -17,8 +16,7 @@ class X::Text::Markdown::Discount::File is X::Text::Markdown::Discount
 }
 
 
-class X::Text::Markdown::Discount::Flag is X::Text::Markdown::Discount
-{
+class X::Text::Markdown::Discount::Flag is X::Text::Markdown::Discount {
     has Str $.flag;
 
     multi method new(Str $flag) { self.bless(:$flag) }
@@ -27,8 +25,7 @@ class X::Text::Markdown::Discount::Flag is X::Text::Markdown::Discount
 }
 
 
-class X::Text::Markdown::Discount::Compile is X::Text::Markdown::Discount
-{
+class X::Text::Markdown::Discount::Compile is X::Text::Markdown::Discount {
     has Str $.message;
 
     multi method new(Str $message) { self.bless(:$message) }
@@ -40,8 +37,7 @@ my \XFlag    := X::Text::Markdown::Discount::Flag;
 my \XCompile := X::Text::Markdown::Discount::Compile;
 
 
-class FILE is repr('CPointer')
-{
+class FILE is repr('CPointer') {
     sub fopen(Str, Str --> FILE)
         is native(Str) { * }
 
@@ -54,28 +50,24 @@ class FILE is repr('CPointer')
     my $errno := cglobal(Str, 'errno', int32);
 
 
-    multi method open(Str $file, Str $mode --> FILE)
-    {
+    multi method open(Str $file, Str $mode --> FILE) {
         fopen($file, $mode) or fail XFile.new(:op("fopen '$mode'"),
                                               :$file, :$errno);
     }
 
-    multi method open(Int $fd, Str $mode --> FILE)
-    {
+    multi method open(Int $fd, Str $mode --> FILE) {
         fdopen($fd, $mode) or fail XFile.new(:op("fdopen '$mode'"),
                                              :file($fd), :$errno);
     }
 
-    method close()
-    {
+    method close() {
         fclose(self) == 0 or warn XFile.new(:op("fclose"),
                                             :file(~self), :$errno);
     }
 }
 
 
-class MMIOT is repr('CPointer')
-{
+class MMIOT is repr('CPointer') {
     sub mkd_string(Str, int32, int32 --> MMIOT)
         is native('markdown') { * }
 
@@ -100,15 +92,25 @@ class MMIOT is repr('CPointer')
     sub mkd_cleanup(MMIOT)
         is native('markdown') { * }
 
+    sub mkd_doc_title(MMIOT)
+        returns Str is encoded('utf8')
+        is native('markdown') { * }
 
-    method from-str(Cool $str, int32 $flags --> MMIOT:D)
-    {
+    sub mkd_doc_author(MMIOT)
+        returns Str is encoded('utf8')
+        is native('markdown') { * }
+
+    sub mkd_doc_date(MMIOT)
+        returns Str is encoded('utf8')
+        is native('markdown') { * }
+
+
+    method from-str(Cool $str, int32 $flags --> MMIOT:D) {
         my int32 $bytes = $str.encode('UTF-8').elems;
         return mkd_string(~$str, $bytes, $flags);
     }
 
-    method from-file(Cool $file, int32 $flags --> MMIOT:D)
-    {
+    method from-file(Cool $file, int32 $flags --> MMIOT:D) {
         my $fh   = FILE.open(~$file, 'r');
         my $self = try mkd_in($fh, $flags);
         $fh.close;
@@ -117,8 +119,20 @@ class MMIOT is repr('CPointer')
     }
 
 
-    method html-to-str(MMIOT:D: int32 $flags --> Str)
-    {
+    method title(MMIOT:D: --> Str) {
+        return mkd_doc_title(self);
+    }
+
+    method author(MMIOT:D: --> Str) {
+        return mkd_doc_author(self);
+    }
+
+    method date(MMIOT:D: --> Str) {
+        return mkd_doc_date(self);
+    }
+
+
+    method html-to-str(MMIOT:D: int32 $flags --> Str) {
         mkd_compile(self, $flags)
             or fail XCompile.new("Can't compile markdown");
 
@@ -132,8 +146,7 @@ class MMIOT is repr('CPointer')
         return $buf[0];
     }
 
-    method html-to-file(MMIOT:D: Str $file, int32 $flags --> Bool)
-    {
+    method html-to-file(MMIOT:D: Str $file, int32 $flags --> Bool) {
         # FIXME
         #
         # mkd_compile(self, 0) or fail "Can't compile markdown";
@@ -149,8 +162,7 @@ class MMIOT is repr('CPointer')
     }
 
 
-    method flags(MMIOT:D: Cool $f, int32 $flags, Bool $to-file)
-    {
+    method flags(MMIOT:D: Cool $f, int32 $flags, Bool $to-file) {
         my $fh = FILE.open($to-file ?? ~$f !! +$f, 'w');
         mkd_flags_are($fh, $flags, 0);
         $fh.close;
@@ -158,8 +170,7 @@ class MMIOT is repr('CPointer')
 
 
     # FIXME Does this actually get called?
-    method DESTROY
-    {
+    method DESTROY {
         mkd_cleanup(self);
     }
 }
@@ -199,15 +210,13 @@ our %discount-flags = (
     URLENCODEDANCHOR => 0x10000000,
 );
 
-our sub make-flags(%fs --> Int)
-{
-    [+|] %fs.kv.map: -> $k, $v
-    {
+our sub make-flags(%fs --> Int) {
+    return [+|] %fs.kv.map: -> $k, $v {
         my $key = uc ~$k;
         if    %discount-flags{   $key } -> $flag { $flag if  $v        }
         elsif %discount-flags{"NO$key"} -> $flag { $flag if !$v        }
         else                                     { fail XFlag.new(~$k) }
-    }
+    };
 }
 
 
@@ -217,32 +226,39 @@ has Int   $!flags;
 submethod BUILD(:$!mmiot, :$!flags) { * }
 
 
-method from(Str $meth, Cool $arg, %flags --> Text::Markdown::Discount:D)
-{
+method from(Str $meth, Cool $arg, %flags --> Text::Markdown::Discount:D) {
     my Int   $flags = make-flags(%flags);
     my MMIOT $mmiot.= "$meth"($arg, $flags);
     return $?PACKAGE.new(:$mmiot, :$flags);
 }
 
-method from-str(Cool $str, *%flags --> Text::Markdown::Discount:D)
-{
+method from-str(Cool $str, *%flags --> Text::Markdown::Discount:D) {
     return self.from('from-str', $str, %flags);
 }
 
-method from-file(Cool $file, *%flags --> Text::Markdown::Discount:D)
-{
+method from-file(Cool $file, *%flags --> Text::Markdown::Discount:D) {
     return self.from('from-file', $file, %flags);
 }
 
 
-method to-str(Text::Markdown::Discount:D: --> Str)
-{
+method to-str(Text::Markdown::Discount:D: --> Str) {
     return $!mmiot.html-to-str($!flags);
 }
 
-method to-file(Text::Markdown::Discount:D: Str $file --> Bool)
-{
+method to-file(Text::Markdown::Discount:D: Str $file --> Bool) {
     return $!mmiot.html-to-file($file, $!flags);
+}
+
+method title(Text::Markdown::Discount:D: --> Str) {
+    return $!mmiot.title;
+}
+
+method author(Text::Markdown::Discount:D: --> Str) {
+    return $!mmiot.author;
+}
+
+method date(Text::Markdown::Discount:D: --> Str) {
+    return $!mmiot.date;
 }
 
 
@@ -250,14 +266,12 @@ multi method dump-flags(Int:D $fd = 1) { $!mmiot.flags($fd,   $!flags, False) }
 multi method dump-flags(Str:D $file  ) { $!mmiot.flags($file, $!flags, True ) }
 
 
-multi sub markdown(Cool:D $str, Cool $to-file?, *%flags --> Cool) is export
-{
+multi sub markdown(Cool:D $str, Cool $to-file?, *%flags --> Cool) is export {
     my $self = $?PACKAGE.from-str($str, |%flags);
     return $to-file.defined ?? $self.to-file(~$to-file) !! $self.to-str;
 }
 
-multi sub markdown(IO::Path:D $file, Cool $to-file?, *%flags --> Cool) is export
-{
+multi sub markdown(IO::Path:D $file, Cool $to-file?, *%flags --> Cool) is export {
     my $self = $?PACKAGE.from-file(~$file, |%flags);
     return $to-file.defined ?? $self.to-file(~$to-file) !! $self.to-str;
 }
@@ -389,6 +403,24 @@ path, or to the file descriptor C<$fd>. Defaults to dumping to file descriptor
 
 This function may be useful in figuring out if the Discount library you're
 linked to actually has the flags you need.
+
+=head3 title
+
+    method title(Text::Markdown::Discount:D: --> Str)
+
+Returns the title parsed from the document header.
+
+=head3 author
+
+    method author(Text::Markdown::Discount:D: --> Str)
+
+Returns the author parsed from the document header.
+
+=head3 date
+
+    method date(Text::Markdown::Discount:D: --> Str)
+
+Returns the date parsed from the document header.
 
 =head2 Text::Markdown Compatibility
 
@@ -570,9 +602,10 @@ L<on GitHub|https://github.com/hartenfels/Text-Markdown-Discount/issues>.
 =item Make sure that my NativeCall usage is correct
 =item Finish this documentation
 
-=head1 AUTHOR
+=head1 AUTHORS
 
-L<Carsten Hartenfels|mailto:carsten.hartenfels@googlemail.com>
+=item L<Ilmari Vacklin|https://github.com/wolverian> - support for document headers.
+=item L<Carsten Hartenfels|https://github.com/hartenfels> - original author.
 
 =head1 SEE ALSO
 
@@ -583,7 +616,8 @@ L<Text::Markdown::Discount for Perl 5|https://metacpan.org/pod/Text::Markdown::D
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2015 by Carsten Hartenfels.
+This software is copyright 2015 - 2017 by Carsten Hartenfels, with some parts
+copyright 2017 by Ilmari Vacklin.
 
 This program is distributed under the terms of the Artistic License 2.0.
 

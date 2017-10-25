@@ -34,4 +34,4 @@ throws-like { f({:strict, :nonexistent}) }, X::Text::Markdown::Discount::Flag,
             'nonexistent flag amongst real flag dies';
 
 
-done-testing
+done-testing;

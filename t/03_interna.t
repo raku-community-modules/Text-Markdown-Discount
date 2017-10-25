@@ -5,8 +5,7 @@ use Text::Markdown::Discount;
 use TextMarkdownDiscountTestBoilerplate;
 
 
-sub test-outputs(Text::Markdown::Discount:D $markdown)
-{
+sub test-outputs(Text::Markdown::Discount:D $markdown) {
     is $markdown.to-str, $simple.to.trim, '...conversion to string works';
 
     my $file = tmpname;
@@ -30,8 +29,7 @@ sub test-outputs(Text::Markdown::Discount:D $markdown)
 }
 
 
-for {}, {:nolinks}, {:nohtml}, {:nolinks, :nohtml}
-{
+for {}, {:nolinks}, {:nohtml}, {:nolinks, :nohtml} {
     my $mod = join '.', sort .keys;
 
     is Text::Markdown::Discount.from-str($html.from, |$_).to-str,
@@ -47,4 +45,4 @@ throws-like { Text::Markdown::Discount.from-file("$data/nonexistent.md") },
             'sourcing from nonexistent file fails';
 
 
-done-testing
+done-testing;

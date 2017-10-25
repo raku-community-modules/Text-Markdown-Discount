@@ -5,8 +5,7 @@ use Text::Markdown::Discount;
 use TextMarkdownDiscountTestBoilerplate;
 
 
-sub test-dump
-{
+sub test-dump {
     my $file = tmpname;
     Text::Markdown::Discount.from-str('', |%_).dump-flags($file);
 
@@ -26,4 +25,4 @@ test-dump( 'LINKS', '!IMAGE', :!image);
 test-dump('!LINKS', '!IMAGE', :!links, :!image);
 
 
-done-testing
+done-testing;
