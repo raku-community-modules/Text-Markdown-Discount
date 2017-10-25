@@ -18,4 +18,15 @@ use TextMarkdownDiscountTestBoilerplate;
     is $result.to-str, '<p>content</p>';
 }
 
+{
+    my $result = Text::Markdown::Discount.from-str(q:to/END/);
+        content with no headers
+        END
+
+    is $result.title,  Str;
+    is $result.author, Str;
+    is $result.date,   Str;
+    is $result.to-str, '<p>content with no headers</p>';
+}
+
 done-testing;
