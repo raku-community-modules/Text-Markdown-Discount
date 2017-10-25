@@ -1,4 +1,4 @@
-unit class Text::Markdown::Discount;
+unit class Text::Markdown::Discount:ver<0.3.0>:auth<github:hartenfels>;
 use NativeCall;
 
 
