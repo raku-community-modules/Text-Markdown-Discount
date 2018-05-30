@@ -281,7 +281,7 @@ multi sub markdown(IO::Path:D $file, Cool $to-file?, *%flags --> Cool) is export
 multi method new($text, *%flags)             { self.from-str($text, |%flags) }
 method       render()                        { self.to-str                   }
 method       to-html()                       { self.to-str                   }
-method       to_html()                       { self.to_str                   }
+method       to_html()                       { self.to-str                   }
 
 sub parse-markdown($text, *%flags) is export { $?PACKAGE.from-str($text, |%flags) }
 
