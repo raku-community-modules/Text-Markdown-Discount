@@ -594,7 +594,7 @@ string. Due to that, the L<#to-file> currently just C<spurt>s the string
 output into the file.
 
 Please report bugs
-L<on GitHub|https://github.com/hartenfels/Text-Markdown-Discount/issues>.
+L<on GitHub|https://github.com/raku-community-modules/Text-Markdown-Discount>.
 
 =head1 TODO
 

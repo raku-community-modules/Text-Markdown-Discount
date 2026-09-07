@@ -16,7 +16,7 @@ unless $got-lib {
         Looks like you don't have the Discount library
         (libmarkdown) installed. It's required for this
         module to function. See this module's README.md at:
-        https://github.com/hartenfels/Text-Markdown-Discount
+        https://github.com/raku-community-modules/Text-Markdown-Discount
         * * * * * * * * * * * * * * * * * * * * * * * * * * *
         HERE
     say 'Bail out! NativeCall to Discount (libmarkdown) not working';
