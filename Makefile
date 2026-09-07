@@ -4,7 +4,7 @@ test:
 authortest:
 	AUTHOR_TESTING=1 $(MAKE) test
 
-README.md: lib/Text/Markdown/Discount.pm6
+README.md: lib/Text/Markdown/Discount.rakumod
 	echo '[![Build Status](https://travis-ci.org/hartenfels/Text-Markdown-Discount.svg?branch=master)](https://travis-ci.org/hartenfels/Text-Markdown-Discount)'\
 	                         > $@
 	echo                    >> $@

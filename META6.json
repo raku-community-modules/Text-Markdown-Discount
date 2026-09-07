@@ -13,7 +13,7 @@
   "name": "Text::Markdown::Discount",
   "perl": "6.*",
   "provides": {
-    "Text::Markdown::Discount": "lib/Text/Markdown/Discount.pm6"
+    "Text::Markdown::Discount": "lib/Text/Markdown/Discount.rakumod"
   },
   "resources": [
   ],
