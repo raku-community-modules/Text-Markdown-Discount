@@ -1,0 +1,6 @@
+use Test;
+use Text::Markdown::Discount;
+
+pass "replace me";
+
+done-testing;

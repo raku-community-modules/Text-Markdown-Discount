@@ -1,17 +1,26 @@
 {
-    "perl"        : "6.*",
-    "name"        : "Text::Markdown::Discount",
-    "license"     : "Artistic-2.0",
-    "version"     : "0.3.0",
-    "description" : "Markdown to HTML using the Discount C library.",
-    "auth"        : "github:hartenfels",
-    "authors"     : [
-        "Carsten Hartenfels <hartenfels@gmail.com>",
-        "Ilmari Vacklin <ilmari.vacklin@iki.fi>"
-    ],
-    "source-url"  : "git://github.com/hartenfels/Text-Markdown-Discount.git",
-    "depends"     : [],
-    "provides"    : {
-        "Text::Markdown::Discount" : "lib/Text/Markdown/Discount.pm6"
-    }
+  "auth": "github:hartenfels",
+  "authors": [
+    "Carsten Hartenfels <hartenfels@gmail.com>",
+    "Ilmari Vacklin <ilmari.vacklin@iki.fi>"
+  ],
+  "build-depends": [
+  ],
+  "depends": [
+  ],
+  "description": "markdown to HTML using the Discount C library",
+  "license": "Artistic-2.0",
+  "name": "Text::Markdown::Discount",
+  "perl": "6.*",
+  "provides": {
+    "Text::Markdown::Discount": "lib/Text/Markdown/Discount.pm6"
+  },
+  "resources": [
+  ],
+  "source-url": "https://github.com/raku-community-modules/Text-Markdown-Discount.git",
+  "tags": [
+  ],
+  "test-depends": [
+  ],
+  "version": "0.3.0"
 }
