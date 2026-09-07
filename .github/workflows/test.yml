@@ -25,9 +25,14 @@ jobs:
       - uses: Raku/setup-raku@v1
         with:
           raku-version: ${{ matrix.raku-version }}
-      - name: Install Dependencies
+      - name: Install libmarkdown
+        run: sudo apt-get install libmarkdown2-dev
+      - name: Install deps
+        if: ${{ always() }}
         run: zef install --/test --test-depends --deps-only .
       - name: Install App::Prove6
+        if: ${{ always() }}
         run: zef install --/test App::Prove6
       - name: Run Tests
+        if: ${{ always() }}
         run: prove6 -I. t
