@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/hartenfels/Text-Markdown-Discount.svg?branch=master)](https://travis-ci.org/hartenfels/Text-Markdown-Discount)
+[![Actions Status](https://github.com/raku-community-modules/Text-Markdown-Discount/actions/workflows/test.yml/badge.svg)](https://github.com/raku-community-modules/Text-Markdown-Discount/actions)
 
 NAME
 ====
@@ -24,7 +24,7 @@ SYNOPSIS
     markdown($raw-md,        'sample.html');
     markdown('README.md'.IO, 'README.html');
 
-You can also use the various [#Flags](#Flags) in Discount:
+You can also use the various [Flags](#Flags) in Discount:
 
     say markdown($raw-md, :autolink, :!image ); # MKD_AUTOLINK | MKD_NOIMAGE
     say markdown($raw-md, :AUTOLINK, :NOIMAGE); # same thing
@@ -60,7 +60,7 @@ This function is probably enough for most cases. It will either take the markdow
 
 Will throw an exception if there's a problem reading or writing files, or if the markdown can't be converted for some reason.
 
-See [#Flags](#Flags) about the `*%flags` parameter.
+See [Flags](#Flags) about the `*%flags` parameter.
 
 Object API
 ----------
@@ -73,15 +73,15 @@ Parses the given `$str` as markdown and returns an object you can call HTML conv
 
 You can call this method on both a class and an object instance.
 
-See [#Flags](#Flags) about the `*%flags` parameter.
+See [Flags](#Flags) about the `*%flags` parameter.
 
 ### from-file
 
     method from-file(Cool $file, *%flags --> Text::Markdown::Discount:D)
 
-As [#from-str](#from-str), except will read the markdown from the given `$file`.
+As [from-str](#from-str), except will read the markdown from the given `$file`.
 
-Will `fail` with an [#X::Text::Markdown::Discount::File](#X::Text::Markdown::Discount::File) if it can't `fopen` the given `$file` and `warn` if it can't `fclose` it.
+Will `fail` with an [X::Text::Markdown::Discount::File](#X::Text::Markdown::Discount::File) if it can't `fopen` the given `$file` and `warn` if it can't `fclose` it.
 
 ### to-str
 
@@ -89,7 +89,7 @@ Will `fail` with an [#X::Text::Markdown::Discount::File](#X::Text::Markdown::Dis
 
 Converts the markdown in the caller into HTML and returns the result.
 
-Will `fail` with a [#X::Text::Markdown::Discount::File](#X::Text::Markdown::Discount::File) if Discount can't compile the markdown for some reason.
+Will `fail` with a [X::Text::Markdown::Discount::File](#X::Text::Markdown::Discount::File) if Discount can't compile the markdown for some reason.
 
 ### to-file
 
@@ -136,7 +136,7 @@ These functions exist so that you can use `Text::Markdown::Discount` as a drop-i
     multi method new($text, *%flags)
     sub parse-markdown($text *%flags) is export
 
-Dispatch to [#from-str](#from-str).
+Dispatch to [from-str](#from-str).
 
 ### render
 
@@ -148,7 +148,7 @@ Dispatch to [#from-str](#from-str).
     method to-html()
     method to_html()
 
-Dispatch to [#to-str](#to-str).
+Dispatch to [to-str](#to-str).
 
 Exceptions
 ----------
@@ -182,95 +182,139 @@ Flags
 
 Discount provides a variety of flags that change how the conversion behavior. You can pass flags to all routines that take a `*%flags` parameter.
 
-The following list of flags is taken from [Discount's documentation](http://www.pell.portland.or.us/~orc/Code/discount/). Depending on your version of the library, they might not all be available, see [#dump-flags](#dump-flags).
+The following list of flags is taken from [Discount's documentation](http://www.pell.portland.or.us/~orc/Code/discount/). Depending on your version of the library, they might not all be available, see [dump-flags](#dump-flags).
 
 All of these flags map to the respective `MKD_` constants. The keys are case-insensitive. Constants that originally start with `NO` can be used without it and negated. For example, `:!links` is the same as `:nolinks`.
 
-`:!links`, `:nolinks`
+**C<:!links>, C<:nolinks>**
+
+
 
 Don't do link processing, block `<a> ` tags.
 
-`:!image`, `:noimage`
+**C<:!image>, C<:noimage>**
+
+
 
 Don't do image processing, block `<img> `.
 
-`:!pants`, `:nopants`
+**C<:!pants>, C<:nopants>**
+
+
 
 Don't run `smartypants()`
 
-`:!html`, `:nohtml`
+**C<:!html>, C<:nohtml>**
+
+
 
 Don't allow raw html through **AT ALL**.
 
-`:strict`
+**C<:strict>**
+
+
 
 Disable `SUPERSCRIPT`, `RELAXED_EMPHASIS`.
 
-`:tagtext`
+**C<:tagtext>**
+
+
 
 Process text inside an html tag; no `<em> `, no `<bold> `, no html or `[]` expansion.
 
-`:!ext`, `:noext`
+**C<:!ext>, C<:noext>**
+
+
 
 Don't allow pseudo-protocols.
 
-`:cdata`
+**C<:cdata>**
+
+
 
 Generate code for xml `![CDATA[...]]`.
 
-`:!superscript`, `:nosuperscript`
+**C<:!superscript>, C<:nosuperscript>**
+
+
 
 No `A^B`.
 
-`:!relaxed`, `:norelaxed`
+**C<:!relaxed>, C<:norelaxed>**
+
+
 
 Emphasis happens *everywhere*.
 
-`:!tables`, `:notables`
+**C<:!tables>, C<:notables>**
+
+
 
 Don't process [PHP Markdown Extra](http://michelf.com/projects/php-markdown/extra/) tables.
 
-`:!strikethrough`, `:nostrikethrough`
+**C<:!strikethrough>, C<:nostrikethrough>**
+
+
 
 Forbid `~~strikethrough~~`.
 
-`:toc`
+**C<:toc>**
+
+
 
 Do table-of-contents processing.
 
-`:compat`
+**C<:compat>**
+
+
 
 Compatability with MarkdownTest_1.0.
 
-`:autolink`
+**C<:autolink>**
+
+
 
 Make `http://foo.com` a link even without `<> `s.
 
-`:safelink`
+**C<:safelink>**
+
+
 
 Paranoid check for link protocol.
 
-`:!header`, `:noheader`
+**C<:!header>, C<:noheader>**
+
+
 
 Don't process document headers.
 
-`:tabstop`
+**C<:tabstop>**
+
+
 
 Expand tabs to 4 spaces.
 
-`:!divquote`, `:nodivquote`
+**C<:!divquote>, C<:nodivquote>**
+
+
 
 Forbid `>%class% ` blocks.
 
-`:!alphalist`, `:noalphalist`
+**C<:!alphalist>, C<:noalphalist>**
+
+
 
 Forbid alphabetic lists.
 
-`:!dlist`, `:nodlist`
+**C<:!dlist>, C<:nodlist>**
+
+
 
 Forbid definition lists.
 
-`:extra_footnote`
+**C<:extra_footnote>**
+
+
 
 Enable [PHP Markdown Extra](http://michelf.com/projects/php-markdown/extra/)-style footnotes.
 
@@ -279,9 +323,9 @@ BUGS
 
 There's probably some bugs in the NativeCall handling. I'm not sure if the types are specified correctly and if the destructor for the native pointers gets called when it needs to.
 
-There seems to be a bug in Discount's `mkd_generatehtml` function, where it adds excessive `nul`s to the output if it has previously been compiled to a string. Due to that, the [#to-file](#to-file) currently just `spurt`s the string output into the file.
+There seems to be a bug in Discount's `mkd_generatehtml` function, where it adds excessive `nul`s to the output if it has previously been compiled to a string. Due to that, the [to-file](#to-file) currently just `spurt`s the string output into the file.
 
-Please report bugs [on GitHub](https://github.com/hartenfels/Text-Markdown-Discount/issues).
+Please report bugs [on GitHub](https://github.com/raku-community-modules/Text-Markdown-Discount).
 
 TODO
 ====
@@ -312,3 +356,4 @@ This software is copyright 2015 - 2017 by Carsten Hartenfels, with some parts co
 This program is distributed under the terms of the Artistic License 2.0.
 
 For further information, please see LICENSE or visit <http://www.perlfoundation.org/attachment/legal/artistic-2_0.txt>.
+
