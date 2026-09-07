@@ -167,12 +167,6 @@ class MMIOT is repr('CPointer') {
         mkd_flags_are($fh, $flags, 0);
         $fh.close;
     }
-
-
-    # FIXME Does this actually get called?
-    method DESTROY {
-        mkd_cleanup(self);
-    }
 }
 
 
