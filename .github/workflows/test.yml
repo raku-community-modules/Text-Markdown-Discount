@@ -26,8 +26,9 @@ jobs:
         with:
           raku-version: ${{ matrix.raku-version }}
       - name: Install libmarkdown
-        run: apt-get >/dev/null 2>&1 && sudo apt-get install libmarkdown2-dev
+        run: sudo apt-get install libmarkdown2-dev
       - name: Install deps
+          if: always()
         run: zef install --/test --test-depends --deps-only .
       - name: Install App::Prove6
         run: zef install --/test App::Prove6
