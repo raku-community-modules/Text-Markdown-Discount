@@ -1,7 +1,7 @@
-bare link http://doc.perl6.org/
+bare link http://docs.raku.org/
 
-angly link <http://doc.perl6.org/>
+angly link <http://docs.raku.org/>
 
-[titled link](http://doc.perl6.org/)
+[titled link](http://docs.raku.org/)
 
-<a href="http://doc.perl6.org/">html link</a>
+<a href="http://docs.raku.org/">html link</a>
